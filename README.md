@@ -1,1 +1,2 @@
 # Practicing-R
+# This repository contains codework that I've produced to learn R basics and data analysis. My code gets a little rough around the edges where I rely on my knowledge from years of procedural programming (looping and the like) and where I struggle to get the hang of functional, LISPy concepts like vectorized operations (e.g. lapply() and friends). I could also use more descriptive comments. I may revisit this repo from time to time to improve my R skills.
