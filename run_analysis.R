@@ -39,6 +39,10 @@ run_analysis <- function() {
     
     
 # STEP 2. Extracts only the measurements on the mean and standard deviation for each measurement. 
+
+    # merge() after adding id columns? or dplyr join_all()
+    # dfList = list(df1,df2,df3); join_all(dfList)
+
 # STEP 3. Uses descriptive activity names to name the activities in the data set
 # STEP 4. Appropriately labels the data set with descriptive variable names. 
 
