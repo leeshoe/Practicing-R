@@ -10,6 +10,8 @@ run_analysis <- function() {
     # STEP 3. Uses descriptive activity names to name the activities in the data set
     # STEP 4. Appropriately labels the data set with descriptive variable names. 
     # STEP 5. From the data set in step 4, creates a second, independent tidy data set with the average of each variable for each activity and each subject.
+    
+    library(dplyr)
 
 # STEP 1. Merges the training and the test sets to create one data set.
     # There are twelve file types split between the test and train datasets. The following twelve groups
@@ -65,9 +67,17 @@ run_analysis <- function() {
 
 # STEP 5. From the data set in step 4, creates a second, independent tidy data set with the average of each variable for each activity and each subject.
 
+    # I could use dplyr() in steps 3, 4 as well.
+    # I think this will result in same # of columns, but fewer rows. 
 
+####### TO DO: remove () from features names in STEP 4 colnames() function.
+# Figure out how to summarize() with lapply() or sapply(), or devise another way
+# to mean() all 79 variables without typing them all out!
+    meanstd_fulldata.grouped <- group_by(meanstd_fulldata, subjectID, activity_label)
+    summarize(meanstd_fulldata.grouped, "tBodyAcc-mean()-X" = mean("tBodyAcc-mean()-X"))
+          #lapply(meanstd_fulldata.grouped[ , as.character(meanstd_features$feature)], mean, na.rm=TRUE))
 
-
+          
 #if (!file.exists("")) {
  #   write.table() using row.name=FALSE
 #}
