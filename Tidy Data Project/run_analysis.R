@@ -73,9 +73,12 @@ run_analysis <- function() {
 ####### TO DO: remove () from features names in STEP 4 colnames() function.
 # Figure out how to summarize() with lapply() or sapply(), or devise another way
 # to mean() all 79 variables without typing them all out!
+# there's also summarise_each() -- note that it takes british spelling only, not "summarize".
+# http://stackoverflow.com/questions/22644804/how-can-i-use-dplyr-to-apply-a-function-to-all-non-group-by-columns
     meanstd_fulldata.grouped <- group_by(meanstd_fulldata, subjectID, activity_label)
-    summarize(meanstd_fulldata.grouped, "tBodyAcc-mean()-X" = mean("tBodyAcc-mean()-X"))
+    #summarize(meanstd_fulldata.grouped, "tBodyAcc-mean()-X" = mean("tBodyAcc-mean()-X"))
           #lapply(meanstd_fulldata.grouped[ , as.character(meanstd_features$feature)], mean, na.rm=TRUE))
+    tidy <- summarise_each(meanstd_fulldata.grouped, funs(mean))
 
           
 #if (!file.exists("")) {
