@@ -86,18 +86,20 @@ run_analysis <- function() {
 
 # there's also summarise_each() -- note that it takes british spelling only, not "summarize".
 # http://stackoverflow.com/questions/22644804/how-can-i-use-dplyr-to-apply-a-function-to-all-non-group-by-columns
-    har.data.full.grouped <- group_by(har.data.full, subjectID, activity_label)
-    har.tidy <- summarise_each(har.data.full.grouped, funs(mean))
+#    har.data.full.grouped <- group_by(har.data.full, subjectID, activity_label)
+#    har.tidy <- summarise_each(har.data.full.grouped, funs(mean))
+
+    har.tidy <- har.data.full %>% group_by(subjectID, activity_label) %>% summarise_each(funs(mean))
 
 # Final step is to write the tidy dataset to a file.
 
-if (!file.exists("Tidy Data Project/har_tidy.txt")) {
+if (!file.exists("Tidy Data Project/har_tidy_output.txt")) {
 
-        write.table(har.tidy, "Tidy Data Project/har_tidy.txt", row.name=FALSE)
+        write.table(har.tidy, "Tidy Data Project/har_tidy_output.txt", row.name=FALSE)
     
     } else { 
     
-        "Error: har_tidy.txt file already exists in Tidy Data Project directory." 
+        "Error: har_tidy_output.txt file already exists in Tidy Data Project directory." 
 
     }
 
