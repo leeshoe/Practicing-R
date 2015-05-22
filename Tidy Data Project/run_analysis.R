@@ -1,91 +1,104 @@
 run_analysis <- function() {
     
     # Getting and Cleaning Data Project: UCI HAR dataset. See dataset details here:
-    # Local dataset in directory: ./UCI HAR Dataset/
     # http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones
-    # PROJECT OBJECTIVE: create one R script called run_analysis.R to perform the following 5 steps.
+    # Local dataset is in this directory: ./Tidy Data Project/UCI HAR Dataset/
     
-    # STEP 1. Merges the training and the test sets to create one data set.
-    # STEP 2. Extracts only the measurements on the mean and standard deviation for each measurement. 
-    # STEP 3. Uses descriptive activity names to name the activities in the data set
-    # STEP 4. Appropriately labels the data set with descriptive variable names. 
-    # STEP 5. From the data set in step 4, creates a second, independent tidy data set with the average of each variable for each activity and each subject.
+    # PROJECT OBJECTIVE: create one R script called run_analysis.R to perform the following 5 steps.
+        # STEP 1. Merges the training and the test sets to create one data set.
+        # STEP 2. Extracts only the measurements on the mean and standard deviation for each measurement. 
+        # STEP 3. Uses descriptive activity names to name the activities in the data set
+        # STEP 4. Appropriately labels the data set with descriptive variable names. 
+        # STEP 5. From the data set in step 4, creates a second, independent tidy data set with the average of each variable for each activity and each subject.
     
     library(dplyr)
 
 # STEP 1. Merges the training and the test sets to create one data set.
-    # There are twelve file types split between the test and train datasets. The following twelve groups
-    # of code merge each into an "all" file.
-    # UPDATE: I think I only need merge #1-3, and skip all the inertial data, since the inertial data
-    # don't contribute to the measurements for STEP 2.
+
+# There are twelve types of files making up the test and train datasets together. Only three of those twelve types provide mean and standard deviation data for subject measurements. Therefore, this script will read only from those three types of files. 
     
-        # 1. retrieve full list of subject ID #s
-    subjecttest <- read.table("UCI HAR Dataset/test/subject_test.txt", header = FALSE, col.names = "subjectID")
-    subjecttrain <- read.table("UCI HAR Dataset/train/subject_train.txt", header = FALSE, col.names = "subjectID")
-    subjectall <- rbind(subjecttest, subjecttrain)
-        # 2. retrieve full list of 561-feature vector with time and frequency domain variables.
-    xtest <- read.table("UCI HAR Dataset/test/X_test.txt", header = FALSE)
-    xtrain <- read.table("UCI HAR Dataset/train/X_train.txt", header = FALSE)
-    xall <- rbind(xtest, xtrain)
-        # 3. retrieve full list of activity label IDs (one variable, range 1:6)
-    ytest <- read.table("UCI HAR Dataset/test/y_test.txt", header = FALSE, col.names = "activity_labelID")
-    ytrain <- read.table("UCI HAR Dataset/train/y_train.txt", header = FALSE, col.names = "activity_labelID")
-    yall <- rbind(ytest, ytrain)
+        # A. Retrieve full list of subject ID #s
+    subject.test <- 
+        read.table("Tidy Data Project/UCI HAR Dataset/test/subject_test.txt", 
+                   header = FALSE, col.names = "subjectID")
+    subject.train <- 
+        read.table("Tidy Data Project/UCI HAR Dataset/train/subject_train.txt", 
+                   header = FALSE, col.names = "subjectID")
+    subject.all <- rbind(subject.test, subject.train)
+
+        # B. Retrieve full list of 561-feature vector with time and frequency domain variables.
+    x.test <- 
+        read.table("Tidy Data Project/UCI HAR Dataset/test/X_test.txt", 
+                   header = FALSE)
+    x.train <- 
+        read.table("Tidy Data Project/UCI HAR Dataset/train/X_train.txt", 
+                   header = FALSE)
+    x.all <- rbind(x.test, x.train)
+
+        # C. Retrieve full list of activity label IDs (one variable, ID range 1:6)
+    y.test <- 
+        read.table("Tidy Data Project/UCI HAR Dataset/test/y_test.txt", 
+                   header = FALSE, col.names = "activity_labelID")
+    y.train <- 
+        read.table("Tidy Data Project/UCI HAR Dataset/train/y_train.txt", 
+                   header = FALSE, col.names = "activity_labelID")
+    y.all <- rbind(y.test, y.train)
     
-        # combine in one dataframe
-    fulldata <- cbind(subjectall, yall, xall)
+        # D. Combine the three types of raw data in one dataframe.
+    raw.data.combined <- cbind(subject.all, y.all, x.all)
     
 # STEP 2. Extracts only the measurements on the mean and standard deviation for each measurement. 
-    # Strategy: search features.txt for strings "mean()" and "std()", return IDs that correspond
-    # to the numerals in the V1:V561 column names. The grep regular expression actually fetches three
-    # features, as defined in features.txt:
+    # This part of the script uses the grep() function to search the features.txt file in the UCI HAR Data set for strings "mean()" and "std()", returning IDs that correspond to grep() matches. These ID numerals will correspond to the V1:V561 column headings in raw.data.combined.
+    # The regular expression used by grep() actually fetches three types of feature, as defined in features.txt:
         # mean(): Mean value
         # std(): Standard deviation
         # meanFreq(): Weighted average of the frequency components to obtain a mean frequency
             # this third feature is another type of mean, so it seems it belongs in the project spec.
-    features <- read.table("UCI HAR Dataset/features.txt", header = FALSE, col.names = c("featureID", "feature"))
-    meanstdID <- grep("(mean|std)()", features$feature)
-    meanstd_features <- features[meanstdID,]
-    meanstd_features$Vcolumns <- paste("V", meanstd_features$featureID, sep="")
-    meanstd_extract <- fulldata[ , meanstd_features$Vcolumns]
-    meanstd_fulldata <- cbind(fulldata[1:2], meanstd_extract)
+    # It will not search for the features from the end of features.txt, which use an angle() function to calculate dot products using two input vectors. In this dataset these input vectors are themselves means (in most cases) but the output of this calculation is not itself necessarily a mean of these subjects, so I've omitted these features.
+    features <- 
+        read.table("Tidy Data Project/UCI HAR Dataset/features.txt", 
+                   header = FALSE, col.names = c("featureID", "feature"))
+    mean.std.ID <- grep("(mean|std)()", features$feature)
+    mean.std.features <- features[mean.std.ID, ]
+    mean.std.features$Vcolumns <- paste("V", mean.std.features$featureID, sep="")
+    har.data.mean.std.extract <- raw.data.combined[ , mean.std.features$Vcolumns]
+    har.data.full <- cbind(raw.data.combined[1:2], har.data.mean.std.extract)
 
 # STEP 3. Uses descriptive activity names to name the activities in the data set
 
-    activity_labels <- read.table("UCI HAR Dataset/activity_labels.txt", header = FALSE, col.names = c("activity_labelID", "activity_label"))
-    # this next bit puts column at very end, #82... maybe move it around? Or replace the ID column?
-    meanstd_fulldata$activity_label <- activity_labels$activity_label[match(meanstd_fulldata$activity_labelID, activity_labels$activity_labelID)]
-    meanstd_fulldata <- meanstd_fulldata[ , c(1, 82, 3:81)] # reorder columns: drop activity_labelID and
-                                                            # move activity_label factor names to #2 spot
+    activity.labels <- 
+        read.table("Tidy Data Project/UCI HAR Dataset/activity_labels.txt", 
+                   header = FALSE, col.names = c("activity_labelID", "activity_label"))
+    har.data.full$activity_label <- 
+        activity.labels$activity_label[
+            match(har.data.full$activity_labelID, activity.labels$activity_labelID)
+            ]
+    har.data.full <- har.data.full[ , c(1, 82, 3:81)]
 
 # STEP 4. Appropriately labels the data set with descriptive variable names. 
     
-    colnames(meanstd_fulldata)[3:81] <- as.character(meanstd_features$feature)
+    colnames(har.data.full)[3:81] <- as.character(mean.std.features$feature)
     # as.character() function converts feature factor to text values. If I don't do this,
     # it assigns numeric factor codes to colnames() ... and that wouldn't be very
     # descriptive!
 
 # STEP 5. From the data set in step 4, creates a second, independent tidy data set with the average of each variable for each activity and each subject.
 
-    # I could use dplyr() in steps 3, 4 as well.
-    # I think this will result in same # of columns, but fewer rows. 
-
-####### TO DO: remove () from features names in STEP 4 colnames() function.
-# Figure out how to summarize() with lapply() or sapply(), or devise another way
-# to mean() all 79 variables without typing them all out!
 # there's also summarise_each() -- note that it takes british spelling only, not "summarize".
 # http://stackoverflow.com/questions/22644804/how-can-i-use-dplyr-to-apply-a-function-to-all-non-group-by-columns
-    meanstd_fulldata.grouped <- group_by(meanstd_fulldata, subjectID, activity_label)
-    #summarize(meanstd_fulldata.grouped, "tBodyAcc-mean()-X" = mean("tBodyAcc-mean()-X"))
-          #lapply(meanstd_fulldata.grouped[ , as.character(meanstd_features$feature)], mean, na.rm=TRUE))
-    tidy <- summarise_each(meanstd_fulldata.grouped, funs(mean))
+    har.data.full.grouped <- group_by(har.data.full, subjectID, activity_label)
+    har.tidy <- summarise_each(har.data.full.grouped, funs(mean))
 
-          
-#if (!file.exists("")) {
- #   write.table() using row.name=FALSE
-#}
+# Final step is to write the tidy dataset to a file.
 
+if (!file.exists("Tidy Data Project/har_tidy.txt")) {
 
+        write.table(har.tidy, "Tidy Data Project/har_tidy.txt", row.name=FALSE)
+    
+    } else { 
+    
+        "Error: har_tidy.txt file already exists in Tidy Data Project directory." 
 
+    }
 
 }
