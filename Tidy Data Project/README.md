@@ -7,3 +7,6 @@ https://class.coursera.org/getdata-014/forum/thread?thread_id=31
 Info page on original dataset, 
 "Human Activity Recognition Using Smartphones Data Set":
 http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones
+
+Tidy data article by Hadley Wickham:
+http://vita.had.co.nz/papers/tidy-data.pdf

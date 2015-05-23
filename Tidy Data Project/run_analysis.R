@@ -1,4 +1,5 @@
 run_analysis <- function() {
+    # NEXT: look for efficiencies. Do I want to provide better column names?
     
     # Getting and Cleaning Data Project: UCI HAR dataset. See dataset details here:
     # http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones
@@ -38,10 +39,10 @@ run_analysis <- function() {
         # C. Retrieve full list of activity label IDs (one variable, ID range 1:6)
     y.test <- 
         read.table("Tidy Data Project/UCI HAR Dataset/test/y_test.txt", 
-                   header = FALSE, col.names = "activity_labelID")
+                   header = FALSE, col.names = "activity.labelID")
     y.train <- 
         read.table("Tidy Data Project/UCI HAR Dataset/train/y_train.txt", 
-                   header = FALSE, col.names = "activity_labelID")
+                   header = FALSE, col.names = "activity.labelID")
     y.all <- rbind(y.test, y.train)
     
         # D. Combine the three types of raw data in one dataframe.
@@ -55,9 +56,11 @@ run_analysis <- function() {
         # meanFreq(): Weighted average of the frequency components to obtain a mean frequency
             # this third feature is another type of mean, so it seems it belongs in the project spec.
     # It will not search for the features from the end of features.txt, which use an angle() function to calculate dot products using two input vectors. In this dataset these input vectors are themselves means (in most cases) but the output of this calculation is not itself necessarily a mean of these subjects, so I've omitted these features.
+
     features <- 
         read.table("Tidy Data Project/UCI HAR Dataset/features.txt", 
                    header = FALSE, col.names = c("featureID", "feature"))
+
     mean.std.ID <- grep("(mean|std)()", features$feature)
     mean.std.features <- features[mean.std.ID, ]
     mean.std.features$Vcolumns <- paste("V", mean.std.features$featureID, sep="")
@@ -68,16 +71,38 @@ run_analysis <- function() {
 
     activity.labels <- 
         read.table("Tidy Data Project/UCI HAR Dataset/activity_labels.txt", 
-                   header = FALSE, col.names = c("activity_labelID", "activity_label"))
-    har.data.full$activity_label <- 
-        activity.labels$activity_label[
-            match(har.data.full$activity_labelID, activity.labels$activity_labelID)
+                   header = FALSE, col.names = c("activity.labelID", "activity.label"))
+
+    har.data.full$activity.label <- 
+        activity.labels$activity.label[
+            match(har.data.full$activity.labelID, activity.labels$activity.labelID)
             ]
-    har.data.full <- har.data.full[ , c(1, 82, 3:81)]
+    har.data.full <- har.data.full[ , c(1, 82, 3:81)] # omits ID column 2 on purpose
 
 # STEP 4. Appropriately labels the data set with descriptive variable names. 
     
+features.play <- mean.std.features
+features.play$tidy <- sub("^t", "time.domain::", mean.std.features$feature)
+features.play$tidy <- sub("^f", "frequency.domain::", features.play$tidy)
+features.play$tidy <- sub("Acc", ".acceleration", features.play$tidy)
+features.play$tidy <- sub("Jerk", ".jerk", features.play$tidy)
+features.play$tidy <- sub("Gyro", ".gyroscope", features.play$tidy)
+features.play$tidy <- sub("Mag", ".magnitude", features.play$tidy)
+features.play$tidy <- sub("BodyBody", "body.body", features.play$tidy)
+
+features.play$tidy <- sub("-mean\\(\\)", ".mean", features.play$tidy)
+features.play$tidy <- sub("-std\\(\\)", ".stddev", features.play$tidy)
+features.play$tidy <- sub("-meanFreq\\(\\)", ".meanfrequency", features.play$tidy)
+
+features.play$tidy <- sub("-X", "::x.axis", features.play$tidy)
+features.play$tidy <- sub("-Y", "::y.axis", features.play$tidy)
+features.play$tidy <- sub("-Z", "::z.axis", features.play$tidy)
+
+features.play$tidy <- tolower(features.play$tidy)
+
+    # need to do some grepping and regexing here
     colnames(har.data.full)[3:81] <- as.character(mean.std.features$feature)
+    colnames(har.data.full)[3:81] <- as.character(features.play$tidy)
     # as.character() function converts feature factor to text values. If I don't do this,
     # it assigns numeric factor codes to colnames() ... and that wouldn't be very
     # descriptive!
@@ -89,7 +114,7 @@ run_analysis <- function() {
 #    har.data.full.grouped <- group_by(har.data.full, subjectID, activity_label)
 #    har.tidy <- summarise_each(har.data.full.grouped, funs(mean))
 
-    har.tidy <- har.data.full %>% group_by(subjectID, activity_label) %>% summarise_each(funs(mean))
+    har.tidy <- har.data.full %>% group_by(subjectID, activity.label) %>% summarise_each(funs(mean))
 
 # Final step is to write the tidy dataset to a file.
 
