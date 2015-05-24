@@ -1,6 +1,5 @@
 run_analysis <- function() {
-    # NEXT: look for efficiencies. Do I want to provide better column names?
-    
+        
     # Getting and Cleaning Data Project: UCI HAR dataset. See dataset details here:
     # http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones
     # Local dataset is in this directory: ./Tidy Data Project/UCI HAR Dataset/
@@ -12,8 +11,13 @@ run_analysis <- function() {
         # STEP 4. Appropriately labels the data set with descriptive variable names. 
         # STEP 5. From the data set in step 4, creates a second, independent tidy data set with the average of each variable for each activity and each subject.
     
+    # You will need this library for the data wrangling in Step 5.
     library(dplyr)
 
+    if (!file.exists("Tidy Data Project")) {
+        dir.create("Tidy Data Project")
+    }
+    
 # STEP 1. Merges the training and the test sets to create one data set.
 
 # There are twelve types of files making up the test and train datasets together. Only three of those twelve types provide mean and standard deviation data for subject measurements. Therefore, this script will read only from those three types of files. 
@@ -81,28 +85,33 @@ run_analysis <- function() {
 
 # STEP 4. Appropriately labels the data set with descriptive variable names. 
     
-features.play <- mean.std.features
-features.play$tidy <- sub("^t", "time.domain::", mean.std.features$feature)
-features.play$tidy <- sub("^f", "frequency.domain::", features.play$tidy)
-features.play$tidy <- sub("Acc", ".acceleration", features.play$tidy)
-features.play$tidy <- sub("Jerk", ".jerk", features.play$tidy)
-features.play$tidy <- sub("Gyro", ".gyroscope", features.play$tidy)
-features.play$tidy <- sub("Mag", ".magnitude", features.play$tidy)
-features.play$tidy <- sub("BodyBody", "body.body", features.play$tidy)
+    # These text substitution functions expand abbreviated features to more descriptive
+    # terms. For maximum readability, I separate words by periods, and information 
+    # types by double-colons. The UCI HAR data basically pack four pieces of information 
+    # into the feature name. My tidied format is,
+    # "measurement.domain::measurement.type::calculation::vector.axis"
+        # measurement.domain refers to time or frequency.
+    mean.std.features$descriptive <- sub("^t", "time.domain::", mean.std.features$feature)
+    mean.std.features$descriptive <- sub("^f", "frequency.domain::", mean.std.features$descriptive)
+        # measurement.type refers to accelerometer, gyroscope, body, jerk, magnitude.
+    mean.std.features$descriptive <- sub("Acc", ".acceleration", mean.std.features$descriptive)
+    mean.std.features$descriptive <- sub("Jerk", ".jerk", mean.std.features$descriptive)
+    mean.std.features$descriptive <- sub("Gyro", ".gyroscope", mean.std.features$descriptive)
+    mean.std.features$descriptive <- sub("Mag", ".magnitude", mean.std.features$descriptive)
+    mean.std.features$descriptive <- sub("BodyBody", "body.body", mean.std.features$descriptive)
+        # calculation refers to mean, stddev (standard deviation), or meanfrequency.
+    mean.std.features$descriptive <- sub("-mean\\(\\)", "::mean", mean.std.features$descriptive)
+    mean.std.features$descriptive <- sub("-std\\(\\)", "::stddev", mean.std.features$descriptive)
+    mean.std.features$descriptive <- sub("-meanFreq\\(\\)", "::meanfrequency", mean.std.features$descriptive)
+        # vector.axis refers to X, Y, or Z.
+    mean.std.features$descriptive <- sub("-X", "::x.axis", mean.std.features$descriptive)
+    mean.std.features$descriptive <- sub("-Y", "::y.axis", mean.std.features$descriptive)
+    mean.std.features$descriptive <- sub("-Z", "::z.axis", mean.std.features$descriptive)
+        # One last tidying step, make it all lowercase.
+    mean.std.features$descriptive <- tolower(mean.std.features$descriptive)
 
-features.play$tidy <- sub("-mean\\(\\)", ".mean", features.play$tidy)
-features.play$tidy <- sub("-std\\(\\)", ".stddev", features.play$tidy)
-features.play$tidy <- sub("-meanFreq\\(\\)", ".meanfrequency", features.play$tidy)
-
-features.play$tidy <- sub("-X", "::x.axis", features.play$tidy)
-features.play$tidy <- sub("-Y", "::y.axis", features.play$tidy)
-features.play$tidy <- sub("-Z", "::z.axis", features.play$tidy)
-
-features.play$tidy <- tolower(features.play$tidy)
-
-    # need to do some grepping and regexing here
-    colnames(har.data.full)[3:81] <- as.character(mean.std.features$feature)
-    colnames(har.data.full)[3:81] <- as.character(features.play$tidy)
+    # This function changes the column names of my tidied har.data.full data frame.
+    colnames(har.data.full)[3:81] <- as.character(mean.std.features$descriptive)
     # as.character() function converts feature factor to text values. If I don't do this,
     # it assigns numeric factor codes to colnames() ... and that wouldn't be very
     # descriptive!
@@ -111,12 +120,10 @@ features.play$tidy <- tolower(features.play$tidy)
 
 # there's also summarise_each() -- note that it takes british spelling only, not "summarize".
 # http://stackoverflow.com/questions/22644804/how-can-i-use-dplyr-to-apply-a-function-to-all-non-group-by-columns
-#    har.data.full.grouped <- group_by(har.data.full, subjectID, activity_label)
-#    har.tidy <- summarise_each(har.data.full.grouped, funs(mean))
 
     har.tidy <- har.data.full %>% group_by(subjectID, activity.label) %>% summarise_each(funs(mean))
 
-# Final step is to write the tidy dataset to a file.
+# Final step is to write the tidy dataset to a file in the working directory.
 
 if (!file.exists("Tidy Data Project/har_tidy_output.txt")) {
 
