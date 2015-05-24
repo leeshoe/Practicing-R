@@ -67,7 +67,7 @@ The script run_analysis.R tidies the UCI HAR data set by performing the followin
 
 The remaining 79 variables are averaged mean and standard deviation measurements of the above subject/activity groupings. They are all numeric variables. 
 
-The column names are derived from the original UCI HAR Data set features.txt file, modified to provide maximally readable self-explanatory labels. The UCI HAR features.txt file packs four types of information into the original feature names. The tidied output breaks up these four types of information using double-colons (::), and breaks up other terms with periods.
+The column names are derived from the original UCI HAR Data set features.txt file, modified to provide maximally readable self-explanatory labels. The UCI HAR features.txt file packs four types of information into the original feature names. The tidied output breaks up these four types of information using double-colons (::), and breaks up other terms with single periods. On some systems, the double-colon resolves to a double-period when imported into a variable using read.table() ... that looks just as clear.
 
 The tidied columns follow this specific format:
 <ul>
