@@ -9,6 +9,11 @@ My solution to the project is in these five repo files:
 <ol>
 <li>run_analysis.R: a single R script that imports data from multiple files and outputs a single tidy data set to file. This script has detailed comments throughout.</li>
 <li>har_tidy_output.txt: the tidy data set output file. This script was written on an Ubuntu system. The file location is a subdirectory to the R working directory, /Tidy Data Project/. The script will test for the existence of that directory ... if it doesn't exist, it will attempt to create it.</li>
+<ul>
+<li>To look at this file in R, download it to your working directory, then run these commands:</li>
+<li>data <- read.table("har_tidy_output.txt", header = TRUE)</li>
+<li>View(data)</li>
+</ul>
 <li>UCI HAR Dataset subdirectory to the R working directory. This is the 'messy' source data, and you'll need it if you want to test my script. Download it from my repo or from the link provided in class: https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip</li>
 <li>CodeBook.md: this file describes the variables, the data, and transformations performed to tidy the data.</li>
 <li>This ReadMe.md file.
