@@ -41,7 +41,11 @@ explore_power <- function() {
     }
     
     ### STEP 2: Cleaning data.
-    powerdf <- read.csv2("Exploratory Data Analysis Projects/household_power_consumption_FEB1-FEB2-2007.txt")
+        # In read.csv2(), the dec argument interprets number variables as numeric rather 
+        # than factors. This is because read.csv/read.csv2 set dec = ",".
+    powerdf <- read.csv2(
+        "Exploratory Data Analysis Projects/household_power_consumption_FEB1-FEB2-2007.txt", 
+        header = TRUE, dec = ".") 
         # Need to explicitly cast Date variable. This is not necessary with Time column.
     powerdf$Date <- as.Date(powerdf$Date, "%d/%m/%Y")
         # Next: mutate() creates a new variable DateTime, combines Date and Time columns together,
@@ -49,8 +53,21 @@ explore_power <- function() {
     powerdf <- mutate(powerdf, DateTime=(as.POSIXct(paste(powerdf$Date, powerdf$Time))))
         # Then reorder columns, get rid of redundant Date and Time variables.
     powerdf <- powerdf[ , c(10,3:9)]
-
     
-    # plot(powerdf$DateTime, powerdf$Global_active_power, type="l")   ## This gives an exact plot as given in assignment instructions
+    ### STEP 3: The four plots.
+    par(mar=c(5, 12, 4, 4) + 0.1)
+    ### I'll break each of these out to separate code files after exploring code.
+        # plot1.R, plot1.png
+    hist(powerdf$Global_active_power, main = "Global Active Power", xlab = "Global Active Power (kilowatts)", col = "red")
+        # plot2.R, plot2.png
+    plot(powerdf$DateTime, powerdf$Global_active_power, type = "l", xlab = "", ylab = "Global Active Power (kilowatts)")
+        # plot3.R, plot3.png
+    plot(powerdf$DateTime, powerdf$Sub_metering_1, axes = TRUE, type = "l", xlab = "", ylab = "Energy sub metering")
+    par(new=T)
+    plot(powerdf$DateTime, powerdf$Sub_metering_2, axes = FALSE, type = "l", col = "red", xlab = "", ylab = "Energy sub metering")
+    par(new=T)
+    plot(powerdf$DateTime, powerdf$Sub_metering_3, axes = FALSE, type = "l", col = "blue", xlab = "", ylab = "Energy sub metering")
+    legend("topright", )
+        # plot4.R, plot4.png
     
 }
