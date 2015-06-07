@@ -55,19 +55,42 @@ explore_power <- function() {
     powerdf <- powerdf[ , c(10,3:9)]
     
     ### STEP 3: The four plots.
-    par(mar=c(5, 12, 4, 4) + 0.1)
     ### I'll break each of these out to separate code files after exploring code.
+        
         # plot1.R, plot1.png
+    png(filename = "Exploratory Data Analysis Projects/plot1.png", width = 480, height = 480)
     hist(powerdf$Global_active_power, main = "Global Active Power", xlab = "Global Active Power (kilowatts)", col = "red")
+    dev.off()
+    
         # plot2.R, plot2.png
+    png(filename = "Exploratory Data Analysis Projects/plot2.png", width = 480, height = 480)
     plot(powerdf$DateTime, powerdf$Global_active_power, type = "l", xlab = "", ylab = "Global Active Power (kilowatts)")
+    dev.off()
+    
         # plot3.R, plot3.png
+    png(filename = "Exploratory Data Analysis Projects/plot3.png", width = 480, height = 480)
     plot(powerdf$DateTime, powerdf$Sub_metering_1, axes = TRUE, type = "l", xlab = "", ylab = "Energy sub metering")
     par(new=T)
-    plot(powerdf$DateTime, powerdf$Sub_metering_2, axes = FALSE, type = "l", col = "red", xlab = "", ylab = "Energy sub metering")
+    plot(powerdf$DateTime, powerdf$Sub_metering_2, ylim = c(0,30), axes = FALSE, type = "l", col = "red", xlab = "", ylab = "Energy sub metering")
     par(new=T)
-    plot(powerdf$DateTime, powerdf$Sub_metering_3, axes = FALSE, type = "l", col = "blue", xlab = "", ylab = "Energy sub metering")
-    legend("topright", )
+    plot(powerdf$DateTime, powerdf$Sub_metering_3, ylim = c(0,30), axes = FALSE, type = "l", col = "blue", xlab = "", ylab = "Energy sub metering")
+    legend("topright", lty = 1, legend = c("Sub_metering_1", "Sub_metering_2", "Sub_metering_3"), col = c("black", "red", "blue"))
+    dev.off()
+    
         # plot4.R, plot4.png
+    png(filename = "Exploratory Data Analysis Projects/plot4.png", width = 480, height = 480)
+    
+    par(mfrow = c(1, 3), mar = c(4, 4, 2, 1), oma = c(0, 0, 2, 0))
+    with(powerdf, {
+        #plot(DateTime, Global_active_power, type = "l", xlab = "", ylab = "Global Active Power")
+        plot1()
+        plot(DateTime, Voltage, type = "l", xlab = "datetime", ylab = "Voltage")
+        plot3()
+        plot(DateTime, Global_reactive_power, type = "l", xlab = "datetime")
+        mtext("Ozone and Weather in New York City", outer = TRUE)
+    })
+    
+    
+    dev.off()
     
 }
