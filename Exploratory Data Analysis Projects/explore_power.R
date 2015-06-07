@@ -1,5 +1,13 @@
 explore_power <- function() {
     
+    # This script extracts Feb1-Feb2 2007 data from
+    # the file household_power_consumption.txt and writes it to a new file,
+    # household_power_consumption_FEB1-FEB2-2007.txt
+    # If household_power_consumption_FEB1-FEB2-2007.txt already exists, it 
+    # skips all the work of extraction and moves on to tidying the dataset.
+    # All four plotN.R scripts in this directory call this function to retrieve
+    # the dataframe needed to produce their plots.
+    
     library(lubridate) # used for parsing time, second column of input file
     library(plyr) # used for mutate, creating new datetime column
     
