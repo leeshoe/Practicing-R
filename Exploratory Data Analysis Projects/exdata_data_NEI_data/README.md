@@ -51,9 +51,9 @@ output: html_document
 </ul>
 <p class="Text_20_body">Source Classification Code Table (<span class="Source_20_Text">Source_Classification_Code.rds</span>): This table provides a mapping from the SCC digit strings in the Emissions table to the actual name of the PM2.5 source. The sources are categorized in a few different ways from more general to more specific and you may choose to explore whatever categories you think are most useful. For example, source “10100101” is known as “Ext Comb /Electric Gen /Anthracite Coal /Pulverized Coal”.</p>
 <p class="Text_20_body">You can read each of the two files using the <span class="Source_20_Text">readRDS()</span> function in R. For example, reading in each file can be done with the following code:</p>
-    <p class="Preformatted_20_Text"><span class="Source_20_Text">## This first line will likely take a few seconds. Be patient!</span></p>
-    <p class="Preformatted_20_Text"><span class="Source_20_Text">NEI &lt;- readRDS("summarySCC_PM25.rds")</span></p>
-    <p class="P5"><span class="Source_20_Text">SCC &lt;- readRDS("Source_Classification_Code.rds")</span></p>
+<code><p>## This first line will likely take a few seconds. Be patient!</p>
+<p>NEI &lt;- readRDS("summarySCC_PM25.rds")</p>
+<p>SCC &lt;- readRDS("Source_Classification_Code.rds")</p></code>
 <p class="Text_20_body">as long as each of those files is in your current working directory (check by calling <span class="Source_20_Text">dir()</span> and see if those files are in the listing).</p>
 <h2 class="Heading_20_2"><a id="a__Assignment"><span/></a>Assignment</h2>
 <p class="Text_20_body">The overall goal of this assignment is to explore the National Emissions Inventory database and see what it say about fine particulate matter pollution in the United states over the 10-year period 1999–2008. You may use any R package you want to support your analysis.</p>
