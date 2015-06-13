@@ -15,7 +15,7 @@ output: html_document
 <p class="Text_20_body">The data for this assignment are available from the course web site as a single zip file:</p>
 <ul>
 <li>
-<p class="P1" style="margin-left:0.748cm;"><span class="Bullet_20_Symbols" style="display:block;float:left;min-width:0.4991cm;">•.</span><a href="https://d396qusza40orc.cloudfront.net/exdata%2Fdata%2FNEI_data.zip">Data for Peer Assessment</a> [29Mb] <span class="odfLiEnd"/> </p>
+<p class="P1" style="margin-left:0.748cm;"><span class="Bullet_20_Symbols" style="display:block;float:left;min-width:0.4991cm;"></span><a href="https://d396qusza40orc.cloudfront.net/exdata%2Fdata%2FNEI_data.zip">Data for Peer Assessment</a> [29Mb] <span class="odfLiEnd"/> </p>
 </li>
 </ul>
 <p class="Text_20_body">The zip file contains two files:</p>
