@@ -29,29 +29,29 @@ output: html_document
 <p class="P5"><span class="Source_20_Text">## 24 09001 10200602  PM25-PRI     1.490 POINT 1999</span></p>
 <ul>
 <li>
-<p class="P2" style="margin-left:0.748cm;"><span class="Bullet_20_Symbols" style="display:block;float:left;min-width:0.4991cm;">•.</span><span class="Source_20_Text">fips</span>: A five-digit number (represented as a string) indicating the U.S. county <span class="odfLiEnd"/> </p>
+<p class="P2" style="margin-left:0.748cm;"><span class="Bullet_20_Symbols" style="display:block;float:left;min-width:0.4991cm;"></span><span class="Source_20_Text">fips</span>: A five-digit number (represented as a string) indicating the U.S. county <span class="odfLiEnd"/> </p>
 </li>
 <li>
-<p class="P2" style="margin-left:0.748cm;"><span class="Bullet_20_Symbols" style="display:block;float:left;min-width:0.4991cm;">•.</span><span class="Source_20_Text">SCC</span>: The name of the source as indicated by a digit string (see source code classification table)<span class="odfLiEnd"/> </p>
+<p class="P2" style="margin-left:0.748cm;"><span class="Bullet_20_Symbols" style="display:block;float:left;min-width:0.4991cm;"></span><span class="Source_20_Text">SCC</span>: The name of the source as indicated by a digit string (see source code classification table)<span class="odfLiEnd"/> </p>
 </li>
 <li>
-<p class="P2" style="margin-left:0.748cm;"><span class="Bullet_20_Symbols" style="display:block;float:left;min-width:0.4991cm;">•.</span><span class="Source_20_Text">Pollutant</span>: A string indicating the pollutant<span class="odfLiEnd"/> </p>
+<p class="P2" style="margin-left:0.748cm;"><span class="Bullet_20_Symbols" style="display:block;float:left;min-width:0.4991cm;"></span><span class="Source_20_Text">Pollutant</span>: A string indicating the pollutant<span class="odfLiEnd"/> </p>
 </li>
 <li>
-<p class="P2" style="margin-left:0.748cm;"><span class="Bullet_20_Symbols" style="display:block;float:left;min-width:0.4991cm;">•.</span><span class="Source_20_Text">Emissions</span>: Amount of PM2.5 emitted, in tons<span class="odfLiEnd"/> </p>
+<p class="P2" style="margin-left:0.748cm;"><span class="Bullet_20_Symbols" style="display:block;float:left;min-width:0.4991cm;"></span><span class="Source_20_Text">Emissions</span>: Amount of PM2.5 emitted, in tons<span class="odfLiEnd"/> </p>
 </li>
 <li>
-<p class="P2" style="margin-left:0.748cm;"><span class="Bullet_20_Symbols" style="display:block;float:left;min-width:0.4991cm;">•.</span><span class="Source_20_Text">type</span>: The type of source (point, non-point, on-road, or non-road)<span class="odfLiEnd"/> </p>
+<p class="P2" style="margin-left:0.748cm;"><span class="Bullet_20_Symbols" style="display:block;float:left;min-width:0.4991cm;"></span><span class="Source_20_Text">type</span>: The type of source (point, non-point, on-road, or non-road)<span class="odfLiEnd"/> </p>
 </li>
 <li>
-<p class="P2" style="margin-left:0.748cm;"><span class="Bullet_20_Symbols" style="display:block;float:left;min-width:0.4991cm;">•.</span><span class="Source_20_Text">year</span>: The year of emissions recorded<span class="odfLiEnd"/> </p>
+<p class="P2" style="margin-left:0.748cm;"><span class="Bullet_20_Symbols" style="display:block;float:left;min-width:0.4991cm;"></span><span class="Source_20_Text">year</span>: The year of emissions recorded<span class="odfLiEnd"/> </p>
 </li>
 </ul>
 <p class="Text_20_body">Source Classification Code Table (<span class="Source_20_Text">Source_Classification_Code.rds</span>): This table provides a mapping from the SCC digit strings in the Emissions table to the actual name of the PM2.5 source. The sources are categorized in a few different ways from more general to more specific and you may choose to explore whatever categories you think are most useful. For example, source “10100101” is known as “Ext Comb /Electric Gen /Anthracite Coal /Pulverized Coal”.</p>
 <p class="Text_20_body">You can read each of the two files using the <span class="Source_20_Text">readRDS()</span> function in R. For example, reading in each file can be done with the following code:</p>
-<p class="Preformatted_20_Text"><span class="Source_20_Text">## This first line will likely take a few seconds. Be patient!</span></p>
-<p class="Preformatted_20_Text"><span class="Source_20_Text">NEI &lt;- readRDS("summarySCC_PM25.rds")</span></p>
-<p class="P5"><span class="Source_20_Text">SCC &lt;- readRDS("Source_Classification_Code.rds")</span></p>
+    <p class="Preformatted_20_Text"><span class="Source_20_Text">## This first line will likely take a few seconds. Be patient!</span></p>
+    <p class="Preformatted_20_Text"><span class="Source_20_Text">NEI &lt;- readRDS("summarySCC_PM25.rds")</span></p>
+    <p class="P5"><span class="Source_20_Text">SCC &lt;- readRDS("Source_Classification_Code.rds")</span></p>
 <p class="Text_20_body">as long as each of those files is in your current working directory (check by calling <span class="Source_20_Text">dir()</span> and see if those files are in the listing).</p>
 <h2 class="Heading_20_2"><a id="a__Assignment"><span/></a>Assignment</h2>
 <p class="Text_20_body">The overall goal of this assignment is to explore the National Emissions Inventory database and see what it say about fine particulate matter pollution in the United states over the 10-year period 1999–2008. You may use any R package you want to support your analysis.</p>
@@ -81,16 +81,16 @@ output: html_document
 <p class="Text_20_body">For each plot you should</p>
 <ul>
 <li>
-<p class="P4" style="margin-left:0.748cm;"><span class="Bullet_20_Symbols" style="display:block;float:left;min-width:0.4991cm;">•.</span>Construct the plot and save it to a <span class="T1">PNG file</span>.<span class="odfLiEnd"/> </p>
+<p class="P4" style="margin-left:0.748cm;"><span class="Bullet_20_Symbols" style="display:block;float:left;min-width:0.4991cm;"></span>Construct the plot and save it to a <span class="T1">PNG file</span>.<span class="odfLiEnd"/> </p>
 </li>
 <li>
-<p class="P4" style="margin-left:0.748cm;"><span class="Bullet_20_Symbols" style="display:block;float:left;min-width:0.4991cm;">•.</span>Create a separate R code file (<span class="Source_20_Text">plot1.R</span>, <span class="Source_20_Text">plot2.R</span>, etc.) that constructs the corresponding plot, i.e. code in plot1.R constructs the plot1.png plot. Your code file should include code for reading the data so that the plot can be fully reproduced. You must also include the code that creates the PNG file. Only include the code for a single plot (i.e. <span class="Source_20_Text">plot1.R</span> should only include code for producing <span class="Source_20_Text">plot1.png</span>)<span class="odfLiEnd"/> </p>
+<p class="P4" style="margin-left:0.748cm;"><span class="Bullet_20_Symbols" style="display:block;float:left;min-width:0.4991cm;"></span>Create a separate R code file (<span class="Source_20_Text">plot1.R</span>, <span class="Source_20_Text">plot2.R</span>, etc.) that constructs the corresponding plot, i.e. code in plot1.R constructs the plot1.png plot. Your code file should include code for reading the data so that the plot can be fully reproduced. You must also include the code that creates the PNG file. Only include the code for a single plot (i.e. <span class="Source_20_Text">plot1.R</span> should only include code for producing <span class="Source_20_Text">plot1.png</span>)<span class="odfLiEnd"/> </p>
 </li>
 <li>
-<p class="P4" style="margin-left:0.748cm;"><span class="Bullet_20_Symbols" style="display:block;float:left;min-width:0.4991cm;">•.</span>Upload the PNG file on the Assignment submission page<span class="odfLiEnd"/> </p>
+<p class="P4" style="margin-left:0.748cm;"><span class="Bullet_20_Symbols" style="display:block;float:left;min-width:0.4991cm;"></span>Upload the PNG file on the Assignment submission page<span class="odfLiEnd"/> </p>
 </li>
 <li>
-<p class="P4" style="margin-left:0.748cm;"><span class="Bullet_20_Symbols" style="display:block;float:left;min-width:0.4991cm;">•.</span>Copy and paste the R code from the corresponding R file into the text box at the appropriate point in the peer assessment.<span class="odfLiEnd"/> </p>
+<p class="P4" style="margin-left:0.748cm;"><span class="Bullet_20_Symbols" style="display:block;float:left;min-width:0.4991cm;"></span>Copy and paste the R code from the corresponding R file into the text box at the appropriate point in the peer assessment.<span class="odfLiEnd"/> </p>
 </li>
 </ul>
 </div>
