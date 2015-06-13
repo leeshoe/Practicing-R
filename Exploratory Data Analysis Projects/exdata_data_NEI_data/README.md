@@ -4,7 +4,58 @@ author: "Tim Shores"
 date: "June 12, 2015"
 output: html_document
 ---
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/Math/DTD/mathml2/xhtml-math11-f.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><!--This file was converted to xhtml by LibreOffice - see http://cgit.freedesktop.org/libreoffice/core/tree/filter/source/xslt for the code.-->
 
+<head profile="http://dublincore.org/documents/dcmi-terms/">
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8"/>
+<title xml:lang="en-US">README</title>
+<meta name="DCTERMS.title" content="" xml:lang="en-US"/>
+<meta name="DCTERMS.language" content="en-US" scheme="DCTERMS.RFC4646"/>
+<meta name="DCTERMS.source" content="http://xml.openoffice.org/odf2xhtml"/>
+<meta name="DCTERMS.issued" content="2015-06-12T20:46:55.955869070" scheme="DCTERMS.W3CDTF"/>
+<meta name="DCTERMS.modified" content="2015-06-12T20:47:19.011736750" scheme="DCTERMS.W3CDTF"/>
+<meta name="DCTERMS.provenance" content="" xml:lang="en-US"/>
+<meta name="DCTERMS.subject" content="," xml:lang="en-US"/>
+
+<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/" hreflang="en"/>
+<link rel="schema.DCTERMS" href="http://purl.org/dc/terms/" hreflang="en"/>
+<link rel="schema.DCTYPE" href="http://purl.org/dc/dcmitype/" hreflang="en"/>
+<link rel="schema.DCAM" href="http://purl.org/dc/dcam/" hreflang="en"/>
+
+<style type="text/css">
+@page {  }
+table { border-collapse:collapse; border-spacing:0; empty-cells:show }
+td, th { vertical-align:top; font-size:12pt;}
+h1, h2, h3, h4, h5, h6 { clear:both }
+ol, ul { margin:0; padding:0;}
+li { list-style: none; margin:0; padding:0;}
+<!-- "li span.odfLiEnd" - IE 7 issue-->
+li span. { clear: both; line-height:0; width:0; height:0; margin:0; padding:0; }
+span.footnodeNumber { padding-right:1em; }
+span.annotation_style_by_filter { font-size:95%; font-family:Arial; background-color:#fff000;  margin:0; border:0; padding:0;  }
+* { margin:0;}
+.Heading_20_2 { font-size:18pt; margin-bottom:0.0835in; margin-top:0.139in; font-family:Liberation Serif; writing-mode:page; font-weight:bold; }
+.Heading_20_3 { font-size:14pt; margin-bottom:0.0835in; margin-top:0.0972in; font-family:Liberation Serif; writing-mode:page; color:#808080; font-weight:bold; }
+.P1 { font-size:12pt; line-height:120%; margin-bottom:0.0972in; margin-top:0in; font-family:Liberation Serif; writing-mode:page; }
+.P2 { font-size:12pt; line-height:120%; margin-bottom:0.0972in; margin-top:0in; font-family:Liberation Serif; writing-mode:page; }
+.P3 { font-size:12pt; line-height:120%; margin-bottom:0.0972in; margin-top:0in; font-family:Liberation Serif; writing-mode:page; }
+.P4 { font-size:12pt; line-height:120%; margin-bottom:0.0972in; margin-top:0in; font-family:Liberation Serif; writing-mode:page; }
+.P5 { font-size:10pt; margin-bottom:0.1965in; margin-top:0in; font-family:Liberation Mono; writing-mode:page; }
+.Preformatted_20_Text { font-size:10pt; font-family:Liberation Mono; writing-mode:page; margin-top:0in; margin-bottom:0in; }
+.Standard { font-size:12pt; font-family:Liberation Serif; writing-mode:page; }
+.Text_20_body { font-size:12pt; font-family:Liberation Serif; writing-mode:page; margin-top:0in; margin-bottom:0.0972in; line-height:120%; }
+.Sect1 { margin-left:0in; margin-right:0in; }
+.Bullet_20_Symbols { font-family:OpenSymbol; }
+.Source_20_Text { font-family:Liberation Mono; }
+.T1 { font-weight:bold; }
+.T2 { font-style:italic; }
+<!-- ODF styles with no properties representable as CSS -->
+.Numbering_20_Symbols  { }
+</style>
+
+</head>
 
 <body dir="ltr" style="max-width:8.5in;margin-top:0.7874in; margin-bottom:0.7874in; margin-left:0.7874in; margin-right:0.7874in; writing-mode:lr-tb; ">
 <h2 class="Heading_20_2"><a id="a__Introduction"><span/></a>Introduction</h2>
