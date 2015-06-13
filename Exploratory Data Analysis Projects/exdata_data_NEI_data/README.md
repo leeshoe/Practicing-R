@@ -20,13 +20,15 @@ output: html_document
 </ul>
 <p class="Text_20_body">The zip file contains two files:</p>
 <p class="Text_20_body">PM2.5 Emissions Data (<span class="Source_20_Text">summarySCC_PM25.rds</span>): This file contains a data frame with all of the PM2.5 emissions data for 1999, 2002, 2005, and 2008. For each year, the table contains number of <span class="T1">tons</span> of PM2.5 emitted from a specific type of source for the entire year. Here are the first few rows.</p>
-<p class="Preformatted_20_Text"><span class="Source_20_Text">##     fips      SCC Pollutant Emissions  type year</span></p>
-<p class="Preformatted_20_Text"><span class="Source_20_Text">## 4  09001 10100401  PM25-PRI    15.714 POINT 1999</span></p>
-<p class="Preformatted_20_Text"><span class="Source_20_Text">## 8  09001 10100404  PM25-PRI   234.178 POINT 1999</span></p>
-<p class="Preformatted_20_Text"><span class="Source_20_Text">## 12 09001 10100501  PM25-PRI     0.128 POINT 1999</span></p>
-<p class="Preformatted_20_Text"><span class="Source_20_Text">## 16 09001 10200401  PM25-PRI     2.036 POINT 1999</span></p>
-<p class="Preformatted_20_Text"><span class="Source_20_Text">## 20 09001 10200504  PM25-PRI     0.388 POINT 1999</span></p>
-<p class="P5"><span class="Source_20_Text">## 24 09001 10200602  PM25-PRI     1.490 POINT 1999</span></p>
+<code>
+<p>##     fips      SCC Pollutant Emissions  type year</p>
+<p>## 4  09001 10100401  PM25-PRI    15.714 POINT 1999</p>
+<p>## 8  09001 10100404  PM25-PRI   234.178 POINT 1999</p>
+<p>## 12 09001 10100501  PM25-PRI     0.128 POINT 1999</p>
+<p>## 16 09001 10200401  PM25-PRI     2.036 POINT 1999</p>
+<p>## 20 09001 10200504  PM25-PRI     0.388 POINT 1999</p>
+<p>## 24 09001 10200602  PM25-PRI     1.490 POINT 1999</p>
+</code>
 <ul>
 <li>
 <p class="P2" style="margin-left:0.748cm;"><span class="Bullet_20_Symbols" style="display:block;float:left;min-width:0.4991cm;"></span><span class="Source_20_Text">fips</span>: A five-digit number (represented as a string) indicating the U.S. county <span class="odfLiEnd"/> </p>
