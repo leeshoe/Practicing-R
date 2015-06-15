@@ -16,7 +16,7 @@ plot3 <- function() {
         # if() just to save time. 
     }
     
-    # SCC is a much smaller df so I don't wrap with an if()
+        # SCC is a much smaller df so I don't wrap with an if()
     SCC <- readRDS("Exploratory Data Analysis Projects/exdata_data_NEI_data/Source_Classification_Code.rds")
     
     # Info about these big ol' dataframes:
@@ -26,22 +26,22 @@ plot3 <- function() {
     # 3.74 MB   
     
     # Step 2: transform data relevant to the question.
-    # Subset aka filter() Baltimore rows, fips == 24510
-    # Then, we only need Emissions and year variables, grouped by each of four years.
+        # Subset aka filter() Baltimore rows, fips == 24510
+        # Then, we only need Emissions and year variables, grouped by each of four years.
     NEI.baltimore <- filter(NEI, fips == 24510)
     NEI.baltimore.grouped <- NEI.baltimore %>% group_by(type, year) %>% select(Emissions, type, year)
-    # Then summarize sums Emissions within each group defined by group_by(year)
+        # Then summarize sums Emissions within each group defined by group_by(year)
     NEI.baltimore.emission.sums <- summarize(NEI.baltimore.grouped, TotalEmissions = sum(Emissions))
     
     # Step 3: Draw the plot to png. 
-    png(filename = "Exploratory Data Analysis Projects/exdata_data_NEI_data/plot3.png", width = 480, height = 480)
     
     p <- qplot(year, TotalEmissions, data = NEI.baltimore.emission.sums, 
           color = type, geom = c("line", "point"),
           xlab = "year", ylab = "Baltimore, MD Total PM2.5 Emissions (tons)")
     p + geom_line(size = 3) + geom_point(size = 5)
+    ggsave(filename = "Exploratory Data Analysis Projects/exdata_data_NEI_data/plot3.png")
     
-    # close the PNG device.
+        # close the PNG device (opened by ggsave(), it chooses device according to filename.
     dev.off()
     
 }
