@@ -31,7 +31,7 @@ plot2 <- function() {
     NEI.baltimore.emission.sums <- summarize(NEI.baltimore.grouped, TotalEmissions = sum(Emissions))
     
     # Step 3: Draw the plot to png. 
-    png(filename = "Exploratory Data Analysis Projects/exdata_data_NEI_data/plot1.png", width = 480, height = 480)
+    png(filename = "Exploratory Data Analysis Projects/exdata_data_NEI_data/plot2.png", width = 480, height = 480)
     
     # I chose to make a histogram-like plot with ticks only for years with data.
     plot(NEI.baltimore.emission.sums$year, NEI.baltimore.emission.sums$TotalEmissions, 
