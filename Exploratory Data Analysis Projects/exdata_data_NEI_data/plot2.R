@@ -35,7 +35,7 @@ plot2 <- function() {
     
     # I chose to make a histogram-like plot with ticks only for years with data.
     plot(NEI.baltimore.emission.sums$year, NEI.baltimore.emission.sums$TotalEmissions, 
-         xlab = "Year", ylab = "Total PM2.5 Emissions (tons)", 
+         xlab = "Year", ylab = "Baltimore, MD Total PM2.5 Emissions (tons)", 
          xaxt = "n", type = "h", col = "blue", lwd = 20, lend = 2)
     axis(1, at = NEI.baltimore.emission.sums$year) 
     
