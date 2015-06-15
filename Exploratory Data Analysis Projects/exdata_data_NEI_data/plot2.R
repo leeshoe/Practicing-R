@@ -23,19 +23,21 @@ plot2 <- function() {
     # 3.74 MB   
     
     # Step 2: transform data relevant to the question.
-    # We only need Emissions and year variables, grouped by each of four years. 
-    NEI.grouped <- NEI %>% group_by(year) %>% select(Emissions, year)
-    # Then summarize sums Emissions within each group defined by group_by(year)
-    NEI.emission.sums <- summarize(NEI.grouped, TotalEmissions = sum(Emissions))
+        # Subset aka filter() Baltimore rows, fips == 24510
+        # Then, we only need Emissions and year variables, grouped by each of four years.
+    NEI.baltimore <- filter(NEI, fips == 24510)
+    NEI.baltimore.grouped <- NEI.baltimore %>% group_by(year) %>% select(Emissions, year)
+        # Then summarize sums Emissions within each group defined by group_by(year)
+    NEI.baltimore.emission.sums <- summarize(NEI.baltimore.grouped, TotalEmissions = sum(Emissions))
     
     # Step 3: Draw the plot to png. 
     png(filename = "Exploratory Data Analysis Projects/exdata_data_NEI_data/plot1.png", width = 480, height = 480)
     
     # I chose to make a histogram-like plot with ticks only for years with data.
-    plot(NEI.emission.sums$year, NEI.emission.sums$TotalEmissions, 
+    plot(NEI.baltimore.emission.sums$year, NEI.baltimore.emission.sums$TotalEmissions, 
          xlab = "Year", ylab = "Total PM2.5 Emissions (tons)", 
          xaxt = "n", type = "h", col = "blue", lwd = 20, lend = 2)
-    axis(1, at = NEI.emission.sums$year) 
+    axis(1, at = NEI.baltimore.emission.sums$year) 
     
     # close the PNG device.
     dev.off()
