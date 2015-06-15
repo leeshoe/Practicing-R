@@ -38,10 +38,11 @@ plot3 <- function() {
     p <- qplot(year, TotalEmissions, data = NEI.baltimore.emission.sums, 
           color = type, geom = c("line", "point"),
           xlab = "year", ylab = "Baltimore, MD Total PM2.5 Emissions (tons)")
-    p + geom_line(size = 3) + geom_point(size = 5)
-    ggsave(filename = "Exploratory Data Analysis Projects/exdata_data_NEI_data/plot3.png")
+    p + geom_line(size = 2) + geom_point(size = 3)
+    ggsave(filename = "Exploratory Data Analysis Projects/exdata_data_NEI_data/plot3.png",
+           width = 4.8, height = 4.8, units = "in", dpi = 100)
     
-        # close the PNG device (opened by ggsave(), it chooses device according to filename.
-    dev.off()
+        # no need to close device.
+    # dev.off()
     
 }
