@@ -29,18 +29,17 @@ plot3 <- function() {
     # Subset aka filter() Baltimore rows, fips == 24510
     # Then, we only need Emissions and year variables, grouped by each of four years.
     NEI.baltimore <- filter(NEI, fips == 24510)
-    NEI.baltimore.grouped <- NEI.baltimore %>% group_by(year) %>% select(Emissions, year)
+    NEI.baltimore.grouped <- NEI.baltimore %>% group_by(type, year) %>% select(Emissions, type, year)
     # Then summarize sums Emissions within each group defined by group_by(year)
     NEI.baltimore.emission.sums <- summarize(NEI.baltimore.grouped, TotalEmissions = sum(Emissions))
     
     # Step 3: Draw the plot to png. 
     png(filename = "Exploratory Data Analysis Projects/exdata_data_NEI_data/plot3.png", width = 480, height = 480)
     
-    # I chose to make a histogram-like plot with ticks only for years with data.
-    plot(NEI.baltimore.emission.sums$year, NEI.baltimore.emission.sums$TotalEmissions, 
-         xlab = "Year", ylab = "Baltimore, MD Total PM2.5 Emissions (tons)", 
-         xaxt = "n", type = "h", col = "blue", lwd = 20, lend = 2)
-    axis(1, at = NEI.baltimore.emission.sums$year) 
+    p <- qplot(year, TotalEmissions, data = NEI.baltimore.emission.sums, 
+          color = type, geom = c("line", "point"),
+          xlab = "year", ylab = "Baltimore, MD Total PM2.5 Emissions (tons)")
+    p + geom_line(size = 3) + geom_point(size = 5)
     
     # close the PNG device.
     dev.off()
