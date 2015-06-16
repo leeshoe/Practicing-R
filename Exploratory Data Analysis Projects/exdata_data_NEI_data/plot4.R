@@ -26,7 +26,7 @@ plot4 <- function() {
     # Step 2: transform data relevant to the question.
         # We only want coal sources, so we look to the SCC df. 
         # EI.Sector variable has coal in the text, so using grep to filter rows from NEI.
-    SCC.coal <- SCC[grepl("coal", SCC$EI.Sector, ignore.case = TRUE), ]
+    SCC.coal <- filter(SCC, grepl("coal", SCC$EI.Sector, ignore.case = TRUE))
     NEI.coal <- filter(NEI, SCC %in% SCC.coal$SCC)
     NEI.coal.grouped <- NEI.coal %>% group_by(year) %>% select(Emissions, year)
     # Then summarize sums Emissions within each group defined by group_by(year)
