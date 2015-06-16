@@ -8,6 +8,8 @@ plot3 <- function() {
         # from 1999–2008? 
         # Use the ggplot2 plotting system to make a plot answer this question.
     
+    library(dplyr)
+    
     # Step 1: acquire data.
     # This first line will likely take a few seconds. Be patient!
     

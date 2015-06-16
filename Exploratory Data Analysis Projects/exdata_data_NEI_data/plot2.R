@@ -5,6 +5,8 @@ plot2 <- function() {
         # Maryland (fips == 24510) from 1999 to 2008? Use the base plotting 
         # system to make a plot answering this question.
     
+    library(dplyr)
+    
     # Step 1: acquire data.
     # This first line will likely take a few seconds. Be patient!
     
