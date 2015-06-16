@@ -28,7 +28,7 @@ plot5 <- function() {
         # EI.Sector variable has several values that begin with "Mobile".
         # They all seem to be "motor vehicles". No other values seem to be
         # "motor vehicles", so we'll grep for 'mobile'.
-    SCC.mv <- filter(SCC, grepl("motor", SCC$EI.Sector, ignore.case = TRUE))
+    SCC.mv <- filter(SCC, grepl("mobile", SCC$EI.Sector, ignore.case = TRUE))
     NEI.mv <- filter(NEI, SCC %in% SCC.mv$SCC)
     
         # Subset aka filter() Baltimore rows, fips == 24510
