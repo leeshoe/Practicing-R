@@ -7,6 +7,7 @@ plot6 <- function() {
         # time in motor vehicle emissions? 
     
     library(dplyr)
+    library(gridExtra)
     
     # Step 1: acquire data.
     # This first line will likely take a few seconds. Be patient!
@@ -57,12 +58,12 @@ plot6 <- function() {
     
     NEI.delta.la <- 
         NEI.mv.baltimore.la.emission.sums %>% 
-            mutate(delta.emission = ((TotalEmissions - la1999) / la1999) * 100) %>%
+            mutate(percent.delta.emission = ((TotalEmissions - la1999) / la1999) * 100) %>%
             filter(fips == "Los Angeles County")
     
     NEI.delta.bc <- 
         NEI.mv.baltimore.la.emission.sums %>% 
-        mutate(delta.emission = ((TotalEmissions - bc1999) / bc1999) * 100) %>%
+        mutate(percent.delta.emission = ((TotalEmissions - bc1999) / bc1999) * 100) %>%
         filter(fips == "Baltimore City")
     
     NEI.final <- rbind(NEI.delta.bc, NEI.delta.la)
@@ -70,10 +71,14 @@ plot6 <- function() {
     
     # Step 3: Draw the plot to png. 
     
-    p <- qplot(year, TotalEmissions, data = NEI.mv.baltimore.la.emission.sums, 
+    p1 <- qplot(year, TotalEmissions, data = NEI.final, 
                geom = c("line", "point"), facets = . ~ fips,
                xlab = "year", ylab = "Motor Vehicle PM2.5 Emissions (tons)")
-    p + geom_line(size = 2) + geom_point(size = 3)
+    p2 <- qplot(year, percent.delta.emission, data = NEI.final,
+                geom = c("line", "point"), facets = . ~ fips,
+                xlab = "year", ylab = "Percent Change in Motor Vehicle PM2.5 Emissions (tons)")
+    grid.arrange(p1, p2)
+    p1 + geom_line(size = 2) + geom_point(size = 3)
     ggsave(filename = "Exploratory Data Analysis Projects/exdata_data_NEI_data/plot6.png",
            width = 4.8, height = 4.8, units = "in", dpi = 100)
     
