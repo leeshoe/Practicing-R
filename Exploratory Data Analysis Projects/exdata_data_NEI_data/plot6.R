@@ -45,6 +45,29 @@ plot6 <- function() {
     NEI.mv.baltimore.la.emission.sums[NEI.mv.baltimore.la.emission.sums == "24510"] <- "Baltimore City"
     NEI.mv.baltimore.la.emission.sums[NEI.mv.baltimore.la.emission.sums == "06037"] <- "Los Angeles County"
     
+    # Step 2.5: normalizing data to 1999 values to calculate change.
+    la1999 <- 
+        NEI.mv.baltimore.la.emission.sums$TotalEmissions[
+            NEI.mv.baltimore.la.emission.sums$year == 1999 
+            & NEI.mv.baltimore.la.emission.sums$fips == "Los Angeles County"]
+    bc1999 <- 
+        NEI.mv.baltimore.la.emission.sums$TotalEmissions[
+            NEI.mv.baltimore.la.emission.sums$year == 1999 
+            & NEI.mv.baltimore.la.emission.sums$fips == "Baltimore City"]
+    
+    NEI.delta.la <- 
+        NEI.mv.baltimore.la.emission.sums %>% 
+            mutate(delta.emission = ((TotalEmissions - la1999) / la1999) * 100) %>%
+            filter(fips == "Los Angeles County")
+    
+    NEI.delta.bc <- 
+        NEI.mv.baltimore.la.emission.sums %>% 
+        mutate(delta.emission = ((TotalEmissions - bc1999) / bc1999) * 100) %>%
+        filter(fips == "Baltimore City")
+    
+    NEI.final <- rbind(NEI.delta.bc, NEI.delta.la)
+    
+    
     # Step 3: Draw the plot to png. 
     
     p <- qplot(year, TotalEmissions, data = NEI.mv.baltimore.la.emission.sums, 
