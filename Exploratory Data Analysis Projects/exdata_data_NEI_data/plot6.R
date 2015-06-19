@@ -8,6 +8,7 @@ plot6 <- function() {
     
     library(dplyr)
     library(gridExtra)
+    library(ggplot2)
     
     # Step 1: acquire data.
     # This first line will likely take a few seconds. Be patient!
@@ -77,12 +78,12 @@ plot6 <- function() {
     p2 <- qplot(year, percent.delta.emission, data = NEI.final,
                 geom = c("line", "point"), facets = . ~ fips,
                 xlab = "year", ylab = "Percent Change in Motor Vehicle PM2.5 Emissions (tons)")
-    grid.arrange(p1, p2)
-    p1 + geom_line(size = 2) + geom_point(size = 3)
-    ggsave(filename = "Exploratory Data Analysis Projects/exdata_data_NEI_data/plot6.png",
-           width = 4.8, height = 4.8, units = "in", dpi = 100)
     
-    # no need to close device.
-    # dev.off()
+    png(filename = "Exploratory Data Analysis Projects/exdata_data_NEI_data/plot6.png", width = 480, height = 480)
+        # writing to device because grid.arrange is not a ggplot2 object.
+    grid.arrange(p1, p2) # need to fix titles...
+    
+    # close the PNG device.
+    dev.off()
     
 }
