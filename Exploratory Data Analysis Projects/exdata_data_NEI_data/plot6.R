@@ -48,6 +48,9 @@ plot6 <- function() {
     NEI.mv.baltimore.la.emission.sums[NEI.mv.baltimore.la.emission.sums == "06037"] <- "Los Angeles County"
     
     # Step 2.5: normalizing data to 1999 values to calculate change.
+    # I use abs() for the purposes of comparison. The question is about the 
+    # magnitude of change, a scalar value, rather than the direction of change.
+    # For the record, Baltimore City emissions go down, LA goes up.
     la1999 <- 
         NEI.mv.baltimore.la.emission.sums$TotalEmissions[
             NEI.mv.baltimore.la.emission.sums$year == 1999 
@@ -59,29 +62,29 @@ plot6 <- function() {
     
     NEI.delta.la <- 
         NEI.mv.baltimore.la.emission.sums %>% 
-            mutate(percent.delta.emission = ((TotalEmissions - la1999) / la1999) * 100) %>%
+            mutate(percent.delta.emission = abs(((TotalEmissions - la1999) / la1999) * 100)) %>%
             filter(fips == "Los Angeles County")
     
     NEI.delta.bc <- 
         NEI.mv.baltimore.la.emission.sums %>% 
-        mutate(percent.delta.emission = ((TotalEmissions - bc1999) / bc1999) * 100) %>%
+        mutate(percent.delta.emission = abs(((TotalEmissions - bc1999) / bc1999) * 100)) %>%
         filter(fips == "Baltimore City")
     
     NEI.final <- rbind(NEI.delta.bc, NEI.delta.la)
     
     
-    # Step 3: Draw the plot to png. 
+    # Step 3: Draw the plot to png.
+    # writing to png() device because grid.arrange() is not a ggplot2 object.
     
     p1 <- qplot(year, TotalEmissions, data = NEI.final, 
                geom = c("line", "point"), facets = . ~ fips,
                xlab = "year", ylab = "Motor Vehicle PM2.5 Emissions (tons)")
     p2 <- qplot(year, percent.delta.emission, data = NEI.final,
                 geom = c("line", "point"), facets = . ~ fips,
-                xlab = "year", ylab = "Percent Change in Motor Vehicle PM2.5 Emissions (tons)")
+                xlab = "year", ylab = "% Change in Above Emissions")
     
     png(filename = "Exploratory Data Analysis Projects/exdata_data_NEI_data/plot6.png", width = 480, height = 480)
-        # writing to device because grid.arrange is not a ggplot2 object.
-    grid.arrange(p1, p2) # need to fix titles...
+    grid.arrange(p1, p2) 
     
     # close the PNG device.
     dev.off()
