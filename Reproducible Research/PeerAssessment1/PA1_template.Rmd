@@ -8,7 +8,11 @@ output:
 
 ## Loading and preprocessing the data
 ```{r}
-activity <- read.csv("Reproducible Research/PeerAssessment1/activity.csv")
+library(dplyr) # for preprocessing
+# library(lubridate) # may need... for casting date variable in a way that is compatible with dplyr
+activity <- read.csv("Reproducible Research/PeerAssessment1/activity.csv") %>% filter(!is.na(steps))
+# activity$date <- as.Date(activity$date, "%Y-%m-%d")
+activity$date <- as.POSIXct(activity$date, "%Y-%m-%d")
 
 ```
 
