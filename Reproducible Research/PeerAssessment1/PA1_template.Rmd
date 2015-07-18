@@ -7,14 +7,29 @@ output:
 
 
 ## Loading and preprocessing the data
-```{r}
+```{r echo = TRUE}
 library(dplyr) # for preprocessing
-# library(lubridate) # may need... for casting date variable in a way that is compatible with dplyr
-activity <- read.csv("Reproducible Research/PeerAssessment1/activity.csv") %>% filter(!is.na(steps))
-# activity$date <- as.Date(activity$date, "%Y-%m-%d")
-activity$date <- as.POSIXct(activity$date, "%Y-%m-%d")
+library(lubridate) # may need... for casting date variable in a way that is compatible with dplyr
 
+# testing different approaches to grouping.
+
+# version 1 converts date from factor to date.
+activity <- 
+    read.csv("Reproducible Research/PeerAssessment1/activity.csv") %>% 
+    mutate(date = parse_date_time(date,"%Y-%m-%d")) %>% 
+    filter(!is.na(steps))
+activity.grouped <- group_by(activity, date)
+
+# version 2 leaves date as factor. 
+activity2 <- 
+    read.csv("Reproducible Research/PeerAssessment1/activity.csv") %>% 
+    filter(!is.na(steps))
+activity2.grouped <- group_by(activity, date)
+
+# both execute w/o error. which is correct?
+# summarise() returns identical results for both. I'll probably do w/o the parse.
 ```
+
 
 
 ## What is mean total number of steps taken per day?
