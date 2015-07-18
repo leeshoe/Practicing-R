@@ -9,39 +9,115 @@ output:
 ## Loading and preprocessing the data
 ```{r echo = TRUE}
 library(dplyr) # for preprocessing
-library(lubridate) # may need... for casting date variable in a way that is compatible with dplyr
 
-# testing different approaches to grouping.
-
-# version 1 converts date from factor to date.
+### Per the assignment instructions:
+# 1. Load the data (i.e. `read.csv()`)
+# 2. Process/transform the data (if necessary) into a format suitable for
+# your analysis
 activity <- 
     read.csv("Reproducible Research/PeerAssessment1/activity.csv") %>% 
-    mutate(date = parse_date_time(date,"%Y-%m-%d")) %>% 
     filter(!is.na(steps))
-activity.grouped <- group_by(activity, date)
+activity.steps.grouped <- group_by(activity, date)
+activity.steps.summary <- summarise(activity.steps.grouped, sum = sum(steps))
 
-# version 2 leaves date as factor. 
-activity2 <- 
-    read.csv("Reproducible Research/PeerAssessment1/activity.csv") %>% 
-    filter(!is.na(steps))
-activity2.grouped <- group_by(activity, date)
-
-# both execute w/o error. which is correct?
-# summarise() returns identical results for both. I'll probably do w/o the parse.
 ```
 
 
 
 ## What is mean total number of steps taken per day?
+```{r echo = TRUE}
 
+library(ggplot2)
 
+### Per the assignment instructions:
+# 1. Make a histogram of the total number of steps taken each day
+
+p.steps <- ggplot(data = activity.steps.summary, aes(x = sum)) + 
+    geom_histogram(binwidth = 1000, 
+                   col = "blue", 
+                   aes(fill = ..count..)) +
+    scale_fill_gradient("Count", low = "brown", high = "orange") +
+    labs(title = "Histogram for Steps Taken Each Day") +
+    labs(x = "Steps Taken in One Day (Binwidth of 1000 Steps)", y = "Day Count") +
+    xlim(c(0, 22000))
+p.steps
+
+# 2. Calculate and report the **mean** and **median** total number of
+# steps taken per day
+
+centrality.steps <- summarise(activity.steps.summary, mean = mean(sum), median = median(sum))
+centrality.steps
+
+```
 
 ## What is the average daily activity pattern?
 
+```{r echo = TRUE}
+# 1. Make a time series plot (i.e. `type = "l"`) of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
+
+activity.interval.grouped <- group_by(activity, interval)
+activity.interval.summary <- summarise(activity.interval.grouped, mean = mean(steps))
+p.interval <- ggplot(data = activity.interval.summary, aes(x = interval, y = mean)) +
+    geom_line(color = "blue") +
+    labs(title = "Time Series of Steps Averaged Across All Days per Interval") +
+    labs(x = "Interval", y = "Average Steps")
+p.interval
+
+# 2. Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
+maximum.steps <- subset(activity.interval.summary, mean == max(activity.interval.summary$mean))
+maximum.steps$interval
+
+```
 
 
 ## Imputing missing values
 
+```{r echo = TRUE}
+
+### Note that there are a number of days/intervals where there are missing
+# values (coded as `NA`). The presence of missing days may introduce
+# bias into some calculations or summaries of the data.
+# 1. Calculate and report the total number of missing values in the dataset 
+# (i.e. the total number of rows with `NA`s)
+
+activity.with.na <- 
+    read.csv("Reproducible Research/PeerAssessment1/activity.csv")
+nrow(activity.with.na[is.na(activity.with.na$steps), ])
+
+
+# 2. Devise a strategy for filling in all of the missing values in the dataset. 
+# The strategy does not need to be sophisticated. For example, you could use the
+# mean/median for that day, or the mean for that 5-minute interval, etc.
+# 3. Create a new dataset that is equal to the original dataset but with the 
+# missing data filled in.
+activity.with.na
+df <- transform(activity.with.na, steps = ifelse(is.na(steps), 
+activity.interval.summary[activity.interval.summary$interval == activity.with.na$interval, ],
+steps))
+
+# imputing mean values:
+# Give mutate() the whole df including NAs,
+# replace value of steps IF steps is NA, ELSE leave steps alone.
+# Get the replacement value from the earlier interval means df. 
+# Trick is to match interval means df to whole df interval by index, using row_number().
+# This is confusing to read due to my explicit variable names, 
+# so here is a logical rendition of that middle term in the ifelse():
+### mean.df$mean[mean.df$interval == full.df$interval[row_number()]]
+
+activity.imputed <- mutate(activity.with.na, steps = ifelse(is.na(steps),
+    activity.interval.summary$mean[
+        activity.interval.summary$interval == 
+            activity.with.na$interval[row_number()]], 
+    steps))
+
+# 4. Make a histogram of the total number of steps taken each day and 
+# Calculate and report the **mean** and **median** total number of steps taken 
+# per day. Do these values differ from the estimates from the first part of 
+# the assignment? What is the impact of imputing missing data on the estimates 
+# of the total daily number of steps?
+
+
+```
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
