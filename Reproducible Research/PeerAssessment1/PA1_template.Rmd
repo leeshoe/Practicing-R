@@ -90,12 +90,19 @@ nrow(activity.with.na[is.na(activity.with.na$steps), ])
 # mean/median for that day, or the mean for that 5-minute interval, etc.
 # 3. Create a new dataset that is equal to the original dataset but with the 
 # missing data filled in.
-activity.with.na
-df <- transform(activity.with.na, steps = ifelse(is.na(steps), 
-activity.interval.summary[activity.interval.summary$interval == activity.with.na$interval, ],
-steps))
 
-# imputing mean values:
+### Imputing mean values:
+# My strategy is to replace NA steps with the mean for the corresponding
+# interval across all day. This mean was calculated earlier, and the trick
+# is matching by interval.
+
+activity.steps.imputed <- mutate(activity.with.na, steps = ifelse(is.na(steps),
+    activity.interval.summary$mean[
+        activity.interval.summary$interval == 
+            activity.with.na$interval[row_number()]], 
+    steps))
+
+# Procedure:
 # Give mutate() the whole df including NAs,
 # replace value of steps IF steps is NA, ELSE leave steps alone.
 # Get the replacement value from the earlier interval means df. 
@@ -104,11 +111,24 @@ steps))
 # so here is a logical rendition of that middle term in the ifelse():
 ### mean.df$mean[mean.df$interval == full.df$interval[row_number()]]
 
-activity.imputed <- mutate(activity.with.na, steps = ifelse(is.na(steps),
-    activity.interval.summary$mean[
-        activity.interval.summary$interval == 
-            activity.with.na$interval[row_number()]], 
-    steps))
+### Another way to describe my experience and my solution:
+# This was tricky. I must have read over 30 stackoverflow and r-bloggers pages, 
+# and still didn't find the solution I arrived at.
+# I chose to replace activity NAs with the total mean for that interval, the mean 
+# across all days. These values exist in another df that I compute earlier, and 
+# they are conditional by the interval value. These were two interesting obstacles.
+# I kept thinking that I'd have to resort to a for loop, or I could use an apply()
+# family function. But I kept hitting walls. I found I could accomplish this by 
+# using the following functions:
+
+# ...a. mutate() can accomplish all of this in a single function call. Pass full 
+# activity df with the NAs to mutate().
+# ...b. ifelse() is the middle term in mutate. Replace steps IF is.na(steps). 
+# ELSE leave steps variable as is.
+# ...c. As mutate works row by row, row_number() is the key to matching the 
+# current activity df row with the mean row from the other df. The middle term 
+# of the ifelse() that matches these two looks like this:
+### mean.df$mean[mean.df$interval == full.df$interval[row_number()]]
 
 # 4. Make a histogram of the total number of steps taken each day and 
 # Calculate and report the **mean** and **median** total number of steps taken 
@@ -116,8 +136,69 @@ activity.imputed <- mutate(activity.with.na, steps = ifelse(is.na(steps),
 # the assignment? What is the impact of imputing missing data on the estimates 
 # of the total daily number of steps?
 
+activity.steps.imputed.grouped <- group_by(activity.steps.imputed, date)
+activity.steps.imputed.summary <- summarise(activity.steps.imputed.grouped, sum = sum(steps))
+
+p.steps.imputed <- ggplot(data = activity.steps.imputed.summary, aes(x = sum)) + 
+    geom_histogram(binwidth = 1000, 
+                   col = "blue", 
+                   aes(fill = ..count..)) +
+    scale_fill_gradient("Count", low = "brown", high = "orange") +
+    labs(title = "Histogram for Steps Taken Each Day") +
+    labs(x = "Steps Taken in One Day (Binwidth of 1000 Steps)", y = "Day Count") +
+    xlim(c(0, 22000))
+p.steps.imputed
+
+centrality.steps.imputed <- summarise(activity.steps.imputed.summary, 
+                                      mean = mean(sum, na.rm = TRUE), 
+                                      median = median(sum, na.rm = TRUE))
+centrality.steps.imputed
+
+# The impact of replacing NAs with interval means is negligible.
 
 ```
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+```{r echo = TRUE}
+
+### For this part the `weekdays()` function may be of some help here. Use
+# the dataset with the filled-in missing values for this part.
+
+### WARNING ###
+# this is code copied from above, for reference
+
+
+p.interval <- ggplot(data = activity.interval.summary, aes(x = interval, y = mean)) +
+    geom_line(color = "blue") +
+    labs(title = "Time Series of Steps Averaged Across All Days per Interval") +
+    labs(x = "Interval", y = "Average Steps")
+p.interval
+
+# 1. Create a new factor variable in the dataset with two levels -- "weekday" 
+# and "weekend" indicating whether a given date is a weekday or weekend day.
+
+activity.steps.imputed.grouped$day <- weekdays(activity.steps.imputed.grouped$date)
+activity.steps.imputed.grouped <- 
+    mutate(activity.steps.imputed.grouped, 
+           day = ifelse(day == "Saturday" || day == "Sunday", "Weekend", "Weekday"))
+activity.steps.imputed.grouped$day <- as.factor(activity.steps.imputed.grouped$day)
+
+# 2. Make a panel plot containing a time series plot (i.e. `type = "l"`) 
+# of the 5-minute interval (x-axis) and the average number of steps taken, 
+# averaged across all weekday days or weekend days (y-axis). 
+
+asig.day <- group_by(activity.steps.imputed.grouped, interval, day)
+asig.day.summary <- summarise(asig.day, meansteps = mean(steps, na.rm = TRUE))
+
+p.day <- ggplot(data = asig.day.summary, aes(x = interval, y = meansteps)) +
+    geom_line(color = "blue") +
+    labs(title = "Time Series of Steps Averaged Across All Days per Interval") +
+    labs(x = "Interval", y = "Average Steps") +
+    facet_grid(day ~ .)
+p.day
+
+
+
+```
