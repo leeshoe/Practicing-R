@@ -5,33 +5,35 @@ output:
     keep_md: true
 ---
 
+## Introduction
+The first task is to load any non-base libraries that my scripts will use. I'll 
+detach these at the end of the presentation.
+
+```{r echo = TRUE}
+library(dplyr) # for data wrangling
+library(ggplot2) # for good looking plots
+```
 
 ## Loading and preprocessing the data
-```{r echo = TRUE}
-library(dplyr) # for preprocessing
-library(ggplot2) # for good looking plots
 
-### Per the assignment instructions:
-# 1. Load the data (i.e. `read.csv()`)
-# 2. Process/transform the data (if necessary) into a format suitable for
-# your analysis
-activity <- 
+To answer the first few question, I decided to filter NA values from the steps data during import from the file. I will need to import the file again later when NA values become relevant to the analysis.
+
+```{r echo = TRUE}
+
+act <- 
     read.csv("/home/tim/datasciencecoursera/Practicing-R/Reproducible Research/PeerAssessment1/activity.csv") %>% 
     filter(!is.na(steps))
-activity.steps.grouped <- group_by(activity, date)
-activity.steps.summary <- summarise(activity.steps.grouped, sum = sum(steps))
+act.steps.grouped <- group_by(act, date) # enables analysis by date factor.
+act.steps.summary <- summarise(act.steps.grouped, sum = sum(steps)) # computes sum of steps for each day.
 
 ```
 
-
-
 ## What is mean total number of steps taken per day?
+
+This script plots a histogram of the total number of steps taken each day. The standard binwidth is around 700 steps. I rounded up to binwidth of 1000 because I felt it captured a little more visual info about the distribution.
+
 ```{r echo = TRUE}
-
-### Per the assignment instructions:
-# 1. Make a histogram of the total number of steps taken each day
-
-p.steps <- ggplot(data = activity.steps.summary, aes(x = sum)) + 
+p.steps <- ggplot(data = act.steps.summary, aes(x = sum)) + 
     geom_histogram(binwidth = 1000, 
                    col = "blue", 
                    aes(fill = ..count..)) +
@@ -40,105 +42,84 @@ p.steps <- ggplot(data = activity.steps.summary, aes(x = sum)) +
     labs(x = "Steps Taken in One Day (Binwidth of 1000 Steps)", y = "Day Count") +
     xlim(c(0, 22000))
 p.steps
+```
 
-# 2. Calculate and report the **mean** and **median** total number of
-# steps taken per day
+# 2. Calculate and report the **mean** and **median** total number of steps taken per day
 
-centrality.steps <- summarise(activity.steps.summary, mean = mean(sum), median = median(sum))
+The dplyr summarise() function computes these values to a new 2x1 data frame. [summarize[] is also valid spelling]
+The mean and median values output below the script.
+
+```{r echo = TRUE}
+centrality.steps <- 
+    summarise(act.steps.summary, mean = mean(sum), median = median(sum))
 centrality.steps
-
 ```
 
 ## What is the average daily activity pattern?
 
-```{r echo = TRUE}
-# 1. Make a time series plot (i.e. `type = "l"`) of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
+This script plots a ggplot time series of the 5-minute-interval along the x-axis,
+and the average number of steps taken, averaged across all days, along the y-axis.
 
-activity.interval.grouped <- group_by(activity, interval)
-activity.interval.summary <- summarise(activity.interval.grouped, mean = mean(steps))
-p.interval <- ggplot(data = activity.interval.summary, aes(x = interval, y = mean)) +
+```{r echo = TRUE}
+act.interval.grouped <- group_by(act, interval) # enables analysis by interval
+act.interval.summary <- summarise(act.interval.grouped, mean = mean(steps)) # computes mean of steps by interval
+p.interval <- ggplot(data = act.interval.summary, aes(x = interval, y = mean)) +
     geom_line(color = "blue") +
     labs(title = "Time Series of Steps Averaged Across All Days per Interval") +
     labs(x = "Interval", y = "Average Steps")
 p.interval
+```
 
-# 2. Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
-maximum.steps <- subset(activity.interval.summary, mean == max(activity.interval.summary$mean))
-maximum.steps$interval
+# Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 
+To answer this question, I subset the summary created in the previous script to identify the max mean.
+
+```{r echo = TRUE}
+max.steps <- subset(act.interval.summary, mean == max(act.interval.summary$mean))
+max.steps$interval
 ```
 
 
 ## Imputing missing values
 
+Earlier, I avoided handling NA steps values by filtering them from my file import. I now import from the file again to a new variable to include NAs. The number of NA rows is reported below the code chunk.
+
 ```{r echo = TRUE}
-
-### Note that there are a number of days/intervals where there are missing
-# values (coded as `NA`). The presence of missing days may introduce
-# bias into some calculations or summaries of the data.
-# 1. Calculate and report the total number of missing values in the dataset 
-# (i.e. the total number of rows with `NA`s)
-
-activity.with.na <- 
+act.with.na <- 
     read.csv("/home/tim/datasciencecoursera/Practicing-R/Reproducible Research/PeerAssessment1/activity.csv")
-nrow(activity.with.na[is.na(activity.with.na$steps), ])
+nrow(act.with.na[is.na(act.with.na$steps), ])
+```
 
+My strategy is to replace NA steps with the mean for the corresponding grouped interval. This mean was calculated earlier, and the trick to replacing with the correct mean is matching between the two tables by interval. This was tricky. I must have read over 30 stackoverflow and r-bloggers pages, and still didn't find the solution I arrived at. I chose to replace activity NAs with the total mean for that interval, the mean across all days. These values exist in another df that I compute earlier, and they are conditional by the interval value. These were two interesting obstacles. I kept thinking that I'd have to resort to a for loop, or I could use an apply() family function. But I kept hitting walls. I found I could accomplish this by using the following functions:
 
-# 2. Devise a strategy for filling in all of the missing values in the dataset. 
-# The strategy does not need to be sophisticated. For example, you could use the
-# mean/median for that day, or the mean for that 5-minute interval, etc.
-# 3. Create a new dataset that is equal to the original dataset but with the 
-# missing data filled in.
+1. mutate() can accomplish all of this in a single function call.
+2. ifelse() is the middle term in mutate. Replace steps IF is.na(steps). 
++ ELSE leave steps variable as is.
+3. As mutate works row by row, row_number() is the key to matching the current activity df row with the mean row from the other df. 
 
-### Imputing mean values:
-# My strategy is to replace NA steps with the mean for the corresponding
-# interval across all day. This mean was calculated earlier, and the trick
-# is matching by interval.
-
-activity.steps.imputed <- mutate(activity.with.na, steps = ifelse(is.na(steps),
-    activity.interval.summary$mean[
-        activity.interval.summary$interval == 
-            activity.with.na$interval[row_number()]], 
+```{r echo = TRUE}
+act.steps.imputed <- mutate(act.with.na, steps = ifelse(is.na(steps),
+    act.interval.summary$mean[
+        act.interval.summary$interval == 
+            act.with.na$interval[row_number()]], 
     steps))
+```
 
-# Procedure:
-# Give mutate() the whole df including NAs,
-# replace value of steps IF steps is NA, ELSE leave steps alone.
-# Get the replacement value from the earlier interval means df. 
-# Trick is to match interval means df to whole df interval by index, using row_number().
-# This is confusing to read due to my explicit variable names, 
-# so here is a logical rendition of that middle term in the ifelse():
-### mean.df$mean[mean.df$interval == full.df$interval[row_number()]]
+The above script is complicated, so I want to explain my procedure in more detail.
+1. The whole script is a single mutate() function replacing the NAs with corresponding means in a new data frame. 
+2. I give mutate() the new df including NAs.
+3. IF the steps variable in an observation is NA, replace. ELSE leave steps alone.
+4. The replacement value comes from the earlier interval means df. 
+5. I use data frame indices to match the interval mean to the current row_number() of the new df. This chunk of the function is confusing to read so here is a logical rendition of that middle ifelse() term:
++ mean.df$mean[mean.df$interval == full.df$interval[row_number()]]
 
-### Another way to describe my experience and my solution:
-# This was tricky. I must have read over 30 stackoverflow and r-bloggers pages, 
-# and still didn't find the solution I arrived at.
-# I chose to replace activity NAs with the total mean for that interval, the mean 
-# across all days. These values exist in another df that I compute earlier, and 
-# they are conditional by the interval value. These were two interesting obstacles.
-# I kept thinking that I'd have to resort to a for loop, or I could use an apply()
-# family function. But I kept hitting walls. I found I could accomplish this by 
-# using the following functions:
+The next code chunk plots a histogram of the total number of steps taken each day. Then the mean and median total number of steps taken per day are reported. These show negligible impact of replacing NAs in the steps variable with interval means.
 
-# ...a. mutate() can accomplish all of this in a single function call. Pass full 
-# activity df with the NAs to mutate().
-# ...b. ifelse() is the middle term in mutate. Replace steps IF is.na(steps). 
-# ELSE leave steps variable as is.
-# ...c. As mutate works row by row, row_number() is the key to matching the 
-# current activity df row with the mean row from the other df. The middle term 
-# of the ifelse() that matches these two looks like this:
-### mean.df$mean[mean.df$interval == full.df$interval[row_number()]]
+```{r echo = TRUE}
+act.steps.imputed.grouped <- group_by(act.steps.imputed, date)
+act.steps.imputed.summary <- summarise(act.steps.imputed.grouped, sum = sum(steps))
 
-# 4. Make a histogram of the total number of steps taken each day and 
-# Calculate and report the **mean** and **median** total number of steps taken 
-# per day. Do these values differ from the estimates from the first part of 
-# the assignment? What is the impact of imputing missing data on the estimates 
-# of the total daily number of steps?
-
-activity.steps.imputed.grouped <- group_by(activity.steps.imputed, date)
-activity.steps.imputed.summary <- summarise(activity.steps.imputed.grouped, sum = sum(steps))
-
-p.steps.imputed <- ggplot(data = activity.steps.imputed.summary, aes(x = sum)) + 
+p.steps.imputed <- ggplot(data = act.steps.imputed.summary, aes(x = sum)) + 
     geom_histogram(binwidth = 1000, 
                    col = "blue", 
                    aes(fill = ..count..)) +
@@ -148,37 +129,30 @@ p.steps.imputed <- ggplot(data = activity.steps.imputed.summary, aes(x = sum)) +
     xlim(c(0, 22000))
 p.steps.imputed
 
-centrality.steps.imputed <- summarise(activity.steps.imputed.summary, 
+centrality.steps.imputed <- summarise(act.steps.imputed.summary, 
                                       mean = mean(sum, na.rm = TRUE), 
                                       median = median(sum, na.rm = TRUE))
 centrality.steps.imputed
-
-# The impact of replacing NAs with interval means is negligible.
-
 ```
 
 
-## Are there differences in activity patterns between weekdays and weekends?
+Now we explore differences in activity patterns between weekdays and weekends.
 
 ```{r echo = TRUE}
 
-### For this part the `weekdays()` function may be of some help here. Use
-# the dataset with the filled-in missing values for this part.
-
-# 1. Create a new factor variable in the dataset with two levels -- "weekday" 
-# and "weekend" indicating whether a given date is a weekday or weekend day.
-
-activity.steps.imputed.grouped$day <- weekdays(as.Date(activity.steps.imputed.grouped$date))
-activity.steps.imputed.grouped <- 
-    mutate(activity.steps.imputed.grouped, 
+act.steps.imputed.grouped$day <- weekdays(as.Date(act.steps.imputed.grouped$date))
+act.steps.imputed.grouped <- 
+    mutate(act.steps.imputed.grouped, 
            day = ifelse(day == "Saturday" || day == "Sunday", "Weekend", "Weekday"))
-activity.steps.imputed.grouped$day <- as.factor(activity.steps.imputed.grouped$day)
+act.steps.imputed.grouped$day <- as.factor(act.steps.imputed.grouped$day)
 
 # 2. Make a panel plot containing a time series plot (i.e. `type = "l"`) 
 # of the 5-minute interval (x-axis) and the average number of steps taken, 
 # averaged across all weekday days or weekend days (y-axis). 
 
-asig.day <- group_by(activity.steps.imputed.grouped, interval, day)
+# abbreviating variable name act.steps.imputed.grouped as "asig"
+# to keep name from getting out of hand.
+asig.day <- group_by(act.steps.imputed.grouped, interval, day)
 asig.day.summary <- summarise(asig.day, meansteps = mean(steps, na.rm = TRUE))
 
 p.day <- ggplot(data = asig.day.summary, aes(x = interval, y = meansteps)) +
