@@ -1,14 +1,26 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 
 
 ## Loading and preprocessing the data
-```{r echo = TRUE}
+
+```r
 library(dplyr) # for preprocessing
+```
+
+```
+## 
+## Attaching package: 'dplyr'
+## 
+## The following object is masked from 'package:stats':
+## 
+##     filter
+## 
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+```
+
+```r
 library(ggplot2) # for good looking plots
 
 ### Per the assignment instructions:
@@ -20,14 +32,13 @@ activity <-
     filter(!is.na(steps))
 activity.steps.grouped <- group_by(activity, date)
 activity.steps.summary <- summarise(activity.steps.grouped, sum = sum(steps))
-
 ```
 
 
 
 ## What is mean total number of steps taken per day?
-```{r echo = TRUE}
 
+```r
 ### Per the assignment instructions:
 # 1. Make a histogram of the total number of steps taken each day
 
@@ -40,18 +51,29 @@ p.steps <- ggplot(data = activity.steps.summary, aes(x = sum)) +
     labs(x = "Steps Taken in One Day (Binwidth of 1000 Steps)", y = "Day Count") +
     xlim(c(0, 22000))
 p.steps
+```
 
+![](PA1_template_files/figure-html/unnamed-chunk-2-1.png) 
+
+```r
 # 2. Calculate and report the **mean** and **median** total number of
 # steps taken per day
 
 centrality.steps <- summarise(activity.steps.summary, mean = mean(sum), median = median(sum))
 centrality.steps
+```
 
+```
+## Source: local data frame [1 x 2]
+## 
+##       mean median
+## 1 10766.19  10765
 ```
 
 ## What is the average daily activity pattern?
 
-```{r echo = TRUE}
+
+```r
 # 1. Make a time series plot (i.e. `type = "l"`) of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
 
 activity.interval.grouped <- group_by(activity, interval)
@@ -61,18 +83,25 @@ p.interval <- ggplot(data = activity.interval.summary, aes(x = interval, y = mea
     labs(title = "Time Series of Steps Averaged Across All Days per Interval") +
     labs(x = "Interval", y = "Average Steps")
 p.interval
+```
 
+![](PA1_template_files/figure-html/unnamed-chunk-3-1.png) 
+
+```r
 # 2. Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 maximum.steps <- subset(activity.interval.summary, mean == max(activity.interval.summary$mean))
 maximum.steps$interval
+```
 
+```
+## [1] 835
 ```
 
 
 ## Imputing missing values
 
-```{r echo = TRUE}
 
+```r
 ### Note that there are a number of days/intervals where there are missing
 # values (coded as `NA`). The presence of missing days may introduce
 # bias into some calculations or summaries of the data.
@@ -82,8 +111,13 @@ maximum.steps$interval
 activity.with.na <- 
     read.csv("/home/tim/datasciencecoursera/Practicing-R/Reproducible Research/PeerAssessment1/activity.csv")
 nrow(activity.with.na[is.na(activity.with.na$steps), ])
+```
 
+```
+## [1] 2304
+```
 
+```r
 # 2. Devise a strategy for filling in all of the missing values in the dataset. 
 # The strategy does not need to be sophisticated. For example, you could use the
 # mean/median for that day, or the mean for that 5-minute interval, etc.
@@ -147,21 +181,33 @@ p.steps.imputed <- ggplot(data = activity.steps.imputed.summary, aes(x = sum)) +
     labs(x = "Steps Taken in One Day (Binwidth of 1000 Steps)", y = "Day Count") +
     xlim(c(0, 22000))
 p.steps.imputed
+```
 
+![](PA1_template_files/figure-html/unnamed-chunk-4-1.png) 
+
+```r
 centrality.steps.imputed <- summarise(activity.steps.imputed.summary, 
                                       mean = mean(sum, na.rm = TRUE), 
                                       median = median(sum, na.rm = TRUE))
 centrality.steps.imputed
+```
 
+```
+## Source: local data frame [1 x 2]
+## 
+##       mean   median
+## 1 10766.19 10765.59
+```
+
+```r
 # The impact of replacing NAs with interval means is negligible.
-
 ```
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
-```{r echo = TRUE}
 
+```r
 ### For this part the `weekdays()` function may be of some help here. Use
 # the dataset with the filled-in missing values for this part.
 
@@ -187,15 +233,16 @@ p.day <- ggplot(data = asig.day.summary, aes(x = interval, y = meansteps)) +
     labs(x = "Interval", y = "Average Steps") +
     facet_grid(day ~ .)
 p.day
-
 ```
 
+![](PA1_template_files/figure-html/unnamed-chunk-5-1.png) 
 
 
-```{r echo = TRUE}
+
+
+```r
 # cleanup!
 
 detach(package:dplyr, unload = TRUE)
 detach(package:ggplot2, unload = TRUE)
-
 ```
