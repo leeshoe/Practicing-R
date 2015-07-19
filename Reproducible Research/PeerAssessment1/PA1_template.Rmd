@@ -76,6 +76,7 @@ meanmedian.steps <-
     summarise(act.steps.summary, 
               mean = mean(sum), 
               median = median(sum))
+meanmedian.steps
 ```
 The computed mean is `r format(meanmedian.steps$mean, digits = 6, nsmall = 1)` and the median is `r format(meanmedian.steps$median, digits = 6, nsmall = 1)`.
 
@@ -99,6 +100,7 @@ To answer this question, I subset the summary created in the previous script to 
 
 ```{r compute_maxmean, echo = TRUE}
 max.steps <- subset(act.interval.summary, mean == max(act.interval.summary$mean))
+max.steps
 ```
 The maximum mean result from this data frame is `r max.steps$mean`, and it belongs to time interval #`r max.steps$interval`.
 
@@ -111,7 +113,7 @@ act.with.na <- read.csv(datapath)
 nrow(act.with.na[is.na(act.with.na$steps), ])
 ```
 
-My strategy is to replace all `r nrow(act.with.na[is.na(act.with.na$steps), ])` NA steps with the mean of the corresponding interval. This mean was calculated earlier. The trick to replacing with the correct mean is matching between the two tables by interval. I must have read over 30 stackoverflow and r-bloggers pages, and still didn't find the solution I arrived at. I kept thinking that I'd have to resort to a for loop, or I an apply() family function. However, I found I could accomplish this by using the following functions:
+My strategy is to replace all `r nrow(act.with.na[is.na(act.with.na$steps), ])` NA steps with the mean of the corresponding interval. This mean was calculated earlier. The trick to replacing with the correct mean is matching between the two tables by interval. I must have read over thirty stackoverflow and r-bloggers pages, and still didn't find the solution I arrived at. I kept thinking that I'd have to resort to a for loop, or I an apply() family function. However, I found I could accomplish this by using the following functions:
 
 1. mutate() can accomplish all of this in a single function call.
 2. ifelse() is the middle term in mutate. 
@@ -155,6 +157,8 @@ p.steps.imputed <- ggplot(data = act.steps.imputed.summary, aes(x = sum)) +
     xlim(c(0, 22000))
 p.steps.imputed
 ```
+Next, we compute the new mean and median.
+
 ```{r compute_NAmeanmedian, echo = TRUE}
 meanmedian.steps.imputed <- 
     summarise(act.steps.imputed.summary, 

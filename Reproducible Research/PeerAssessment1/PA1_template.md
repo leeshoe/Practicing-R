@@ -93,6 +93,14 @@ meanmedian.steps <-
     summarise(act.steps.summary, 
               mean = mean(sum), 
               median = median(sum))
+meanmedian.steps
+```
+
+```
+## Source: local data frame [1 x 2]
+## 
+##       mean median
+## 1 10766.19  10765
 ```
 The computed mean is 10766.2 and the median is 10765.
 
@@ -120,6 +128,14 @@ To answer this question, I subset the summary created in the previous script to 
 
 ```r
 max.steps <- subset(act.interval.summary, mean == max(act.interval.summary$mean))
+max.steps
+```
+
+```
+## Source: local data frame [1 x 2]
+## 
+##   interval     mean
+## 1      835 206.1698
 ```
 The maximum mean result from this data frame is 206.1698113, and it belongs to time interval #835.
 
@@ -137,7 +153,7 @@ nrow(act.with.na[is.na(act.with.na$steps), ])
 ## [1] 2304
 ```
 
-My strategy is to replace all 2304 NA steps with the mean of the corresponding interval. This mean was calculated earlier. The trick to replacing with the correct mean is matching between the two tables by interval. I must have read over 30 stackoverflow and r-bloggers pages, and still didn't find the solution I arrived at. I kept thinking that I'd have to resort to a for loop, or I an apply() family function. However, I found I could accomplish this by using the following functions:
+My strategy is to replace all 2304 NA steps with the mean of the corresponding interval. This mean was calculated earlier. The trick to replacing with the correct mean is matching between the two tables by interval. I must have read over thirty stackoverflow and r-bloggers pages, and still didn't find the solution I arrived at. I kept thinking that I'd have to resort to a for loop, or I an apply() family function. However, I found I could accomplish this by using the following functions:
 
 1. mutate() can accomplish all of this in a single function call.
 2. ifelse() is the middle term in mutate. 
@@ -185,6 +201,8 @@ p.steps.imputed
 ```
 
 ![](PA1_template_files/figure-html/plot_NAhist-1.png) 
+Next, we compute the new mean and median.
+
 
 ```r
 meanmedian.steps.imputed <- 
