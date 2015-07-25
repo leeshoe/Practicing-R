@@ -190,7 +190,7 @@ act.steps.imputed.grouped <- group_by(act.steps.imputed, date)
 act.steps.imputed.summary <- summarise(act.steps.imputed.grouped, sum = sum(steps))
 
 p.steps.imputed <- ggplot(data = act.steps.imputed.summary, aes(x = sum)) + 
-    geom_histogram(binwidth = 1000, 
+    geom_histogram(binwidth = 2500, 
                    col = "blue", 
                    aes(fill = ..count..)) +
     scale_fill_gradient("Count", low = "brown", high = "orange") +

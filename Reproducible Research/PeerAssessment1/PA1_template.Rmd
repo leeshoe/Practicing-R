@@ -157,6 +157,7 @@ p.steps.imputed <- ggplot(data = act.steps.imputed.summary, aes(x = sum)) +
     xlim(c(0, 22000))
 p.steps.imputed
 ```
+
 Next, we compute the new mean and median.
 
 ```{r compute_NAmeanmedian, echo = TRUE}
