@@ -49,7 +49,9 @@ Preprocessing for the first question, which seeks to rank storm events by harmfu
 storm1 <- 
     storm0 %>% 
     group_by(EVTYPE) %>% 
-    select(EVTYPE, FATALITIES, INJURIES, REMARKS, REFNUM)
+    select(EVTYPE, FATALITIES, INJURIES, REMARKS, REFNUM) %>%
+    mutate(Harm.total = FATALITIES + INJURIES)
+
 mean(is.na(storm1))
 
 storm1.summary <- 
@@ -61,6 +63,16 @@ storm1.summary <-
               Injury.mean = round(mean(INJURIES), 5),
               Injury.median = median(INJURIES)) %>% 
     filter(Fatality.sum > 0 | Injury.sum > 0)
+
+summary(storm1.summary[ , 1:3])  # what am i doing here?
+
+# this creates two separate top ten lists for fatalities and injuries, then jams them together.
+# mean is probably better than sum...
+top.fatal.sum <- top_n(storm1.summary, 5, Fatality.sum)
+top.fatal.median <- top_n(storm1.summary, 5, Fatality.median)
+top.injury.sum <- top_n(storm1.summary, 5, Injury.sum)
+top.injury.median <- top_n(storm1.summary, 5, Injury.median)
+top.harmful <- unique(rbind(top.fatal.sum, top.fatal.median, top.injury.sum, top.injury.median))
 
 ```
 
@@ -100,19 +112,20 @@ storm2.summary <-
               Cropdmg.median = median(CROPDMG)) %>%
     filter(Propdmg.sum > 0 | Cropdmg.sum > 0)
 
+top.prop.sum <- top_n(storm2.summary, 5, Propdmg.sum)
+top.prop.median <- top_n(storm2.summary, 5, Propdmg.median)
+top.crop.sum <- top_n(storm2.summary, 5, Cropdmg.sum)
+top.crop.median <- top_n(storm2.summary, 5, Cropdmg.median)
+top.dmg <- unique(rbind(top.prop.sum, top.prop.median, top.crop.sum, top.crop.median))
+
+
 ```
 
 # Results
 1. Across the United States, which types of events (as indicated in the EVTYPE variable) are most harmful with respect to population health?
 
 ```{r plot1, echo = TRUE}
-summary(storm1.summary[ , 1:3])  # what am i doing here?
 
-# this creates two separate top ten lists for fatalities and injuries, then jams them together.
-# mean is probably better than sum...
-most.fatal <- top_n(storm1.summary, 10, Fatality.sum)
-most.injurious <- top_n(storm1.summary, 10, Injury.sum)
-most.harmful <- unique(rbind(most.fatal, most.injurious))
 
 ```
 
