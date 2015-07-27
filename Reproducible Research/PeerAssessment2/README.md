@@ -7,7 +7,7 @@ output: html_document
 
 # Introduction
 
-This repo is my project for the following Coursera/Johns Hopkins assignment. I finished to spec, but I'd like to revisit the final report because I'm not fully satisfied with my plots and my data scrubbing. I admire the work of the following students:
+This repo is my project for the following Coursera/Johns Hopkins assignment. I finished to spec, but I'd like to revisit the final report because I'm not fully satisfied with my plots and my data scrubbing. I would prefer to see the total count of harm and damage in its own graph, with means in a separate plot. The top most harmful and damaging storm event type could be scatter plotted, or perhaps plotted in a time series. I'd also like to reformat numbers as currency. The EVTYPE variable is full of duplication and typos -- "tornados", "tornadoes", and "tornedoes" should obviously all be accounted for as one type of storm event. I admire the work of the following students:
 * http://rpubs.com/sigrist/97287
 
 Storms and other severe weather events can cause both public health and economic problems for communities and municipalities. Many severe events can result in fatalities, injuries, and property damage, and preventing such outcomes to the extent possible is a key concern.
