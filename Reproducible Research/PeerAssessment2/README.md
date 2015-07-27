@@ -8,7 +8,7 @@ output: html_document
 # Introduction
 
 This repo is my project for the following Coursera/Johns Hopkins assignment. I finished to spec, but I'd like to revisit the final report because I'm not fully satisfied with my plots and my data scrubbing. I admire the work of the following students:
-http://rpubs.com/sigrist/97287
+* http://rpubs.com/sigrist/97287
 
 Storms and other severe weather events can cause both public health and economic problems for communities and municipalities. Many severe events can result in fatalities, injuries, and property damage, and preventing such outcomes to the extent possible is a key concern.
 
